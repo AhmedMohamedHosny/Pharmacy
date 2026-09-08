@@ -328,6 +328,164 @@
       justify-content: space-between;
       border-top: 1px solid var(--border-color);
     }
+    /* ========================================================
+       تنسيقات النوافذ المنبثقة (Modals) والبدائل والتقارير
+       ======================================================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(2px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 850px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      border-top: 5px solid var(--primary-header);
+      animation: modalSlide 0.2s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(-15px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      background: #fafafa;
+    }
+
+    .modal-header h3 {
+      font-size: 16px;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #64748b;
+      line-height: 1;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--accent-red);
+    }
+
+    .modal-body {
+      padding: 16px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border-color);
+      background: #f8fafc;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* كروت البيانات وحسابات التقفيل */
+    .z-report-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .z-card {
+      background: #f8fafc;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+    }
+
+    .z-card label {
+      display: block;
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .z-card input, .z-card .val {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      width: 100%;
+      border: 1px solid var(--border-color);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    /* وسوم المواد الفعالة */
+    .active-tag {
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* جدول البدائل */
+    .alt-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .alt-table th {
+      background: #334155;
+      color: white;
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    .alt-table td {
+      padding: 8px;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .btn-select-alt {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-select-alt:hover {
+      background: #059669;
+    }
   </style>
 </head>
 <body>
@@ -341,6 +499,8 @@
         <div class="dropdown-item">قائمة نواقص الأدوية</div>
         <div class="dropdown-item">طباعة باركود</div>
         <div class="dropdown-item">تعديل أسعار جماعي</div>
+        <div class="dropdown-item" onclick="openShortages()">قائمة نواقص الأدوية (F4)</div>
+<div class="dropdown-item" onclick="searchAlternatives(prompt('اكتب اسم الصنف أو المادة الفعالة:'))">البحث بالبدائل (F3)</div>
       </div>
     </div>
     <div class="menu-item">المخازن</div>
@@ -368,6 +528,7 @@
         <div class="dropdown-item">تقفيل درج الكاشير</div>
         <div class="dropdown-item">تقرير مبيعات الموظفين يومي</div>
         <div class="dropdown-item">تقرير تكلفة المبيعات والأرباح</div>
+        <div class="dropdown-item" onclick="openZReport()">تقفيل درج الكاشير (F9)</div>
       </div>
     </div>
     <div class="menu-item">الحسابات اليومية
@@ -496,7 +657,127 @@
     </section>
 
   </main>
+<!-- ========================================================
+       1. مودال البدائل والمادة الفعالة (Alternatives Modal)
+       ======================================================== -->
+  <div class="modal-overlay" id="alternativesModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>🔍 البحث عن بدائل الصنف والمادة الفعالة</h3>
+        <button class="modal-close-btn" onclick="closeModal('alternativesModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom: 12px; display: flex; gap: 8px;">
+          <input type="text" id="altSearchInput" placeholder="ادخل اسم الصنف أو المادة الفعالة (Active Ingredient)..." style="flex:1; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;">
+          <button class="action-btn" onclick="searchAlternatives(document.getElementById('altSearchInput').value)" style="padding: 6px 16px;">بحث</button>
+        </div>
+        <div id="activeIngredientNotice" style="font-size: 13px; color: #4338ca; margin-bottom: 8px;"></div>
+        <table class="alt-table">
+          <thead>
+            <tr>
+              <th>كود الصنف</th>
+              <th>الاسم التجاري</th>
+              <th>المادة الفعالة</th>
+              <th>الرف / المكان</th>
+              <th>الرصيد المتاح</th>
+              <th>سعر الجمهور</th>
+              <th>إجراء</th>
+            </tr>
+          </thead>
+          <tbody id="alternativesTableBody">
+            <!-- تُعبأ البدائل برمجياً -->
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn cancel" onclick="closeModal('alternativesModal')">إغلاق (Esc)</button>
+      </div>
+    </div>
+  </div>
 
+  <!-- ========================================================
+       2. مودال تقفيل درج الكاشير والوردية (Z-Report / Shift End)
+       ======================================================== -->
+  <div class="modal-overlay" id="zReportModal">
+    <div class="modal-box" style="max-width: 600px;">
+      <div class="modal-header" style="background: #fff7ed;">
+        <h3 style="color: #c2410c;">🧾 تقفيل وردية الكاشير وحساب الخزينة (Z-Report)</h3>
+        <button class="modal-close-btn" onclick="closeModal('zReportModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="z-report-grid">
+          <div class="z-card">
+            <label>رصيد افتتاح الوردية (العهدة)</label>
+            <div class="val" id="shiftOpeningCash">500.00 ج.م</div>
+          </div>
+          <div class="z-card">
+            <label>مبيعات الكاش النقدية</label>
+            <div class="val" id="shiftCashSales" style="color: #15803d;">0.00 ج.م</div>
+          </div>
+          <div class="z-card">
+            <label>مبيعات الشبكة (فيزا)</label>
+            <div class="val" id="shiftVisaSales" style="color: #2563eb;">0.00 ج.م</div>
+          </div>
+          <div class="z-card">
+            <label>المصروفات النقدية الخارجة</label>
+            <div class="val" id="shiftExpenses" style="color: #dc2626;">0.00 ج.م</div>
+          </div>
+        </div>
+
+        <div style="background: #f1f5f9; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; font-weight: 700;">
+            <span>المفترض تواجده بالدرج نقدياً:</span>
+            <span id="expectedCashInDrawer">500.00 ج.م</span>
+          </div>
+          <div class="header-field" style="margin-top: 8px;">
+            <label style="font-size: 13px; font-weight: 700;">النقدية الفعلية بالدرج (العد الفعلي):</label>
+            <input type="number" id="actualCashCounted" value="0.00" oninput="calculateShiftDifference()" style="font-size: 16px; font-weight: 700; width: 140px;">
+          </div>
+        </div>
+
+        <div id="diffAlertBox" style="padding: 10px; border-radius: 4px; text-align: center; font-weight: 700; font-size: 14px;">
+          <!-- يظهر العجز أو الزيادة هنا -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn save" onclick="confirmCloseShift()">طباعة التقرير وإقفال الوردية</button>
+        <button class="action-btn cancel" onclick="closeModal('zReportModal')">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       3. مودال النواقص وتنبيهات المخزن (Shortages & Reorder)
+       ======================================================== -->
+  <div class="modal-overlay" id="shortagesModal">
+    <div class="modal-box">
+      <div class="modal-header" style="background: #fef2f2;">
+        <h3 style="color: #b91c1c;">⚠️ بيان نواقص الأدوية والطلبيات المقترحة</h3>
+        <button class="modal-close-btn" onclick="closeModal('shortagesModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <table class="alt-table">
+          <thead>
+            <tr>
+              <th>كود الدواء</th>
+              <th>اسم الصنف</th>
+              <th>الرصيد الحالي</th>
+              <th>حد الطلب (الخطر)</th>
+              <th>الكمية المقترح طلبها</th>
+              <th>الشركة / الموزع</th>
+            </tr>
+          </thead>
+          <tbody id="shortagesTableBody">
+            <!-- تُعبأ بيانات النواقص برمجياً -->
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn" onclick="window.print()">🖨️ طباعة إذن طلبية نواقص</button>
+        <button class="action-btn cancel" onclick="closeModal('shortagesModal')">إغلاق</button>
+      </div>
+    </div>
+  </div>
   <!-- شريط الحالة بالأسفل -->
   <div class="status-bar">
     <div>الكاشير الحالي: <strong>صيدلي / أحمد</strong> | الوردية: <strong>صباحية (درج 1)</strong></div>
@@ -505,14 +786,91 @@
   </div>
 
   <script>
-    // قاعدة بيانات تجريبية لمحاكاة الأدوية
-    const mockPharmacyCatalog = [
-      { code: "1001", name: "Panadol Extra 500mg (24 Tab)", expiry: "2027/05", unit: "شريط", stock: 140, price: 25.00 },
-      { code: "1002", name: "Augmentin 1gm 14 Tab", expiry: "2026/11", unit: "علبة", stock: 35, price: 135.00 },
-      { code: "1003", name: "Cataflam 50mg 20 Tab", expiry: "2028/01", unit: "شريط", stock: 65, price: 28.50 },
-      { code: "1004", name: "Brufen 400mg 30 Tab", expiry: "2027/09", unit: "علبة", stock: 12, price: 54.00 },
-      { code: "1005", name: "Concor 5mg 30 Tab", expiry: "2027/04", unit: "علبة", stock: 80, price: 60.00 }
+// ========================================================
+    // دليل الأدوية الموسع (يشمل المادة الفعالة ومكان الرف وحد الطلب)
+    // ========================================================
+    const pharmacyDatabase = [
+      { 
+        code: "1001", 
+        name: "Panadol Extra 500mg (24 Tab)", 
+        activeIngredient: "Paracetamol + Caffeine", 
+        shelf: "A-01", 
+        expiry: "2027/05", 
+        unit: "شريط", 
+        stock: 140, 
+        minLimit: 30, 
+        price: 25.00, 
+        supplier: "المهدي فارم" 
+      },
+      { 
+        code: "1002", 
+        name: "Augmentin 1gm 14 Tab", 
+        activeIngredient: "Amoxicillin + Clavulanic Acid", 
+        shelf: "B-03", 
+        expiry: "2026/11", 
+        unit: "علبة", 
+        stock: 4, 
+        minLimit: 10, 
+        price: 135.00, 
+        supplier: "المتحدة للصيادلة" 
+      },
+      { 
+        code: "1003", 
+        name: "Cataflam 50mg 20 Tab", 
+        activeIngredient: "Diclofenac Potassium", 
+        shelf: "A-04", 
+        expiry: "2028/01", 
+        unit: "شريط", 
+        stock: 65, 
+        minLimit: 20, 
+        price: 28.50, 
+        supplier: "ابن سينا فارما" 
+      },
+      { 
+        code: "1004", 
+        name: "Brufen 400mg 30 Tab", 
+        activeIngredient: "Ibuprofen", 
+        shelf: "C-02", 
+        expiry: "2027/09", 
+        unit: "علبة", 
+        stock: 3, 
+        minLimit: 15, 
+        price: 54.00, 
+        supplier: "فارما أوفرسيز" 
+      },
+      { 
+        code: "1005", 
+        name: "Megafen 400mg (20 Tab)", 
+        activeIngredient: "Ibuprofen", 
+        shelf: "C-02", 
+        expiry: "2027/08", 
+        unit: "علبة", 
+        stock: 25, 
+        minLimit: 10, 
+        price: 36.00, 
+        supplier: "المهدي فارم" 
+      },
+      { 
+        code: "1006", 
+        name: "Curam 1gm 14 Tab", 
+        activeIngredient: "Amoxicillin + Clavulanic Acid", 
+        shelf: "B-03", 
+        expiry: "2027/03", 
+        unit: "علبة", 
+        stock: 18, 
+        minLimit: 10, 
+        price: 110.00, 
+        supplier: "المهدي فارم" 
+      }
     ];
+
+    // بيانات الوردية الحالية
+    let currentShift = {
+      openingCash: 500.00,
+      cashSales: 0.00,
+      visaSales: 0.00,
+      expenses: 45.00 // مثلاً مصروف شاي أو مستلزمات
+    };
 
     let invoiceItems = [];
 
@@ -692,6 +1050,203 @@
     function printReceipt() {
       window.print();
     }
+    // ========================================================
+    // التحكم في المودالات
+    // ========================================================
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // ========================================================
+    // محرك البحث عن بدائل المادة الفعالة (Generics & Alternatives)
+    // ========================================================
+    function searchAlternatives(term) {
+      if (!term) return;
+      const termLower = term.toLowerCase().trim();
+      
+      // نبحث عن الصنف أولاً لمعرفة مادته الفعالة، أو نبحث بالمادة الفعالة مباشرة
+      const baseMed = pharmacyDatabase.find(m => 
+        m.name.toLowerCase().includes(termLower) || 
+        m.code === termLower || 
+        m.activeIngredient.toLowerCase().includes(termLower)
+      );
+
+      const tableBody = document.getElementById('alternativesTableBody');
+      tableBody.innerHTML = '';
+
+      if (!baseMed) {
+        tableBody.innerHTML = `<tr><td colspan="7" style="color: #dc2626;">لم يتم العثور على أدوية مطابقة!</td></tr>`;
+        return;
+      }
+
+      document.getElementById('activeIngredientNotice').innerHTML = `
+        المادة الفعالة المستهدفة: <strong style="color:#1e293b;">${baseMed.activeIngredient}</strong> 
+        (البدائل المتاحة بنفس التأثير العلمي):
+      `;
+
+      // جلب جميع الأصناف التي تشترك في نفس المادة الفعالة
+      const equivalents = pharmacyDatabase.filter(m => 
+        m.activeIngredient.toLowerCase() === baseMed.activeIngredient.toLowerCase()
+      );
+
+      equivalents.forEach(item => {
+        const tr = document.createElement('tr');
+        const isOutOfStock = item.stock <= 0;
+        tr.innerHTML = `
+          <td>${item.code}</td>
+          <td style="font-weight:700; text-align:right;">${item.name}</td>
+          <td><span class="active-tag">${item.activeIngredient}</span></td>
+          <td><strong style="color:#d97706;">${item.shelf}</strong></td>
+          <td style="color: ${item.stock <= item.minLimit ? '#dc2626' : '#15803d'}; font-weight:700;">
+            ${item.stock} ${item.unit}
+          </td>
+          <td style="font-weight:700;">${item.price.toFixed(2)}</td>
+          <td>
+            <button class="btn-select-alt" ${isOutOfStock ? 'disabled style="background:#94a3b8; cursor:not-allowed;"' : ''} 
+                    onclick="selectAltItem('${item.code}')">
+              ${isOutOfStock ? 'منتهي' : 'إدراج للفاتورة'}
+            </button>
+          </td>
+        `;
+        tableBody.appendChild(tr);
+      });
+
+      openModal('alternativesModal');
+    }
+
+    function selectAltItem(code) {
+      addItemToInvoice(code);
+      closeModal('alternativesModal');
+    }
+
+    // ========================================================
+    // فتح شاشة النواقص المحسوبة آلياً
+    // ========================================================
+    function openShortages() {
+      const shortages = pharmacyDatabase.filter(item => item.stock <= item.minLimit);
+      const tbody = document.getElementById('shortagesTableBody');
+      tbody.innerHTML = '';
+
+      if (shortages.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="color:#15803d; font-weight:700;">جميع الأرصدة آمنة وتتعدى حد الطلب!</td></tr>`;
+      } else {
+        shortages.forEach(item => {
+          const suggestedOrder = (item.minLimit * 3) - item.stock;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.code}</td>
+            <td style="font-weight:700; text-align:right;">${item.name}</td>
+            <td style="color:#dc2626; font-weight:800;">${item.stock}</td>
+            <td>${item.minLimit}</td>
+            <td style="font-weight:700; color:#2563eb;">+ ${suggestedOrder} علبة</td>
+            <td>${item.supplier}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      openModal('shortagesModal');
+    }
+
+    // ========================================================
+    // تقفيل الوردية وحساب العجز والزيادة (Z-Report Logic)
+    // ========================================================
+    function openZReport() {
+      document.getElementById('shiftOpeningCash').textContent = currentShift.openingCash.toFixed(2) + " ج.م";
+      document.getElementById('shiftCashSales').textContent = currentShift.cashSales.toFixed(2) + " ج.م";
+      document.getElementById('shiftVisaSales').textContent = currentShift.visaSales.toFixed(2) + " ج.م";
+      document.getElementById('shiftExpenses').textContent = currentShift.expenses.toFixed(2) + " ج.م";
+
+      const expected = currentShift.openingCash + currentShift.cashSales - currentShift.expenses;
+      document.getElementById('expectedCashInDrawer').textContent = expected.toFixed(2) + " ج.م";
+      
+      calculateShiftDifference();
+      openModal('zReportModal');
+    }
+
+    function calculateShiftDifference() {
+      const expected = currentShift.openingCash + currentShift.cashSales - currentShift.expenses;
+      const actual = parseFloat(document.getElementById('actualCashCounted').value) || 0;
+      const diff = actual - expected;
+      const box = document.getElementById('diffAlertBox');
+
+      if (diff === 0) {
+        box.style.background = "#dcfce7";
+        box.style.color = "#15803d";
+        box.textContent = "الدرج متطابق تماماً بنسبة 100% (لا يوجد عجز أو زيادة)";
+      } else if (diff < 0) {
+        box.style.background = "#fee2e2";
+        box.style.color = "#b91c1c";
+        box.textContent = `يوجد عجز نقدي بقيمة: ${Math.abs(diff).toFixed(2)} ج.م`;
+      } else {
+        box.style.background = "#eff6ff";
+        box.style.color = "#1d4ed8";
+        box.textContent = `توجد زيادة نقدية بقيمة: ${diff.toFixed(2)} ج.م`;
+      }
+    }
+
+    function confirmCloseShift() {
+      alert("تم إقفال الوردية وتخزين التقرير في سجل الحسابات العامة وترحيل العهدة بنجاح!");
+      closeModal('zReportModal');
+    }
+
+    // ========================================================
+    // تحديث دالة الحفظ لترحيل المبيعات إلى حسابات الوردية
+    // ========================================================
+    const originalSaveInvoice = saveInvoice;
+    saveInvoice = function() {
+      if (invoiceItems.length === 0) {
+        alert('لا يمكن حفظ فاتورة فارغة!');
+        return;
+      }
+      const net = parseFloat(document.getElementById('netAmountDisplay').textContent) || 0;
+      const payType = document.querySelector('input[name="payType"]:checked').value;
+
+      if (payType === 'cash') {
+        currentShift.cashSales += net;
+      } else if (payType === 'visa') {
+        currentShift.visaSales += net;
+      }
+
+      // خصم الكميات من الرصيد الحقيقي بالمخزن
+      invoiceItems.forEach(cartItem => {
+        const med = pharmacyDatabase.find(p => p.code === cartItem.code);
+        if (med) {
+          med.stock = Math.max(0, med.stock - cartItem.qty);
+        }
+      });
+
+      alert(`تم ترحيل الفاتورة بنجاح!\nطريقة الدفع: ${payType.toUpperCase()}\nالصافي: ${net.toFixed(2)} ج.م`);
+      resetInvoice();
+    };
+
+    // ========================================================
+    // ترقية اختصارات لوحة المفاتيح
+    // ========================================================
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal('alternativesModal');
+        closeModal('zReportModal');
+        closeModal('shortagesModal');
+      }
+      if (e.key === 'F3') {
+        e.preventDefault();
+        const searchWord = prompt('ابحث عن بدائل دواء (اكتب الاسم أو المادة الفعالة):');
+        if (searchWord) searchAlternatives(searchWord);
+      }
+      if (e.key === 'F4') {
+        e.preventDefault();
+        openShortages();
+      }
+      if (e.key === 'F9') {
+        e.preventDefault();
+        openZReport();
+      }
+    });
   </script>
 </body>
 </html>
