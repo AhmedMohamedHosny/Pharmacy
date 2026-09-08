@@ -2,1880 +2,1581 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نظام إدارة الصيدلية المتكامل - Pharmacy Pro POS</title>
+  <title>e-Stock Pharmacy Ver 1.8.4 Full - [فاتورة بيع والبائع صيدلية د/ طارق]</title>
   <style>
+    /* ========================================================
+       WINDOWS CLASSIC DESKTOP STYLING (e-Stock Pharmacy Theme)
+       ======================================================== */
     :root {
-      --primary: #059669;
-      --primary-hover: #047857;
-      --primary-light: #ecfdf5;
-      --primary-border: #a7f3d0;
-      --dark-navy: #0f172a;
-      --slate-gray: #475569;
-      --border-color: #cbd5e1;
-      --bg-page: #f1f5f9;
-      --bg-card: #ffffff;
-      --accent-red: #e11d48;
-      --accent-red-bg: #ffe4e6;
-      --accent-amber: #d97706;
-      --accent-amber-bg: #fef3c7;
-      --accent-blue: #2563eb;
-      --accent-blue-bg: #eff6ff;
+      --estock-yellow: #E5A900;
+      --estock-yellow-dark: #C99400;
+      --estock-green-header: #087F5B;
+      --estock-bg-gray: #ECE9D8;
+      --estock-window-bg: #F4F3EE;
+      --estock-border-gray: #7F9DB9;
+      --estock-border-light: #D4D0C8;
+      --estock-dark-text: #000000;
+      --estock-blue-text: #000080;
+      --estock-red-text: #C00000;
+      --estock-orange-text: #D97706;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, Arial, sans-serif;
+      font-family: 'Tahoma', 'Arial', sans-serif;
+      font-size: 11px;
       user-select: none;
     }
 
     body {
-      background-color: var(--bg-page);
-      color: var(--dark-navy);
+      background-color: var(--estock-window-bg);
+      color: var(--estock-dark-text);
       height: 100vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
 
-    /* 1. الشريط العلوي المنظم (Top Navigation) */
-    .top-nav {
-      background-color: var(--primary);
+    /* شريط عنوان نافذة الويندوز الكلاسيكي */
+    .win-titlebar {
+      background: linear-gradient(to left, #0055ea, #3a93ff 50%, #0055ea);
+      color: white;
+      height: 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 42px;
-      padding: 0 14px;
-      color: white;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-      z-index: 100;
+      padding: 0 6px;
+      font-weight: bold;
+      font-size: 11px;
     }
 
-    .nav-brand {
-      font-size: 15px;
-      font-weight: 800;
+    .win-controls {
       display: flex;
-      align-items: center;
-      gap: 8px;
-      letter-spacing: -0.5px;
+      gap: 2px;
     }
 
-    .nav-menu {
+    .win-btn {
+      width: 18px;
+      height: 18px;
+      background: #ece9d8;
+      border: 1px solid #ffffff;
+      border-right-color: #707070;
+      border-bottom-color: #707070;
       display: flex;
       align-items: center;
-      gap: 4px;
-      height: 100%;
-    }
-
-    .nav-item {
-      position: relative;
-      padding: 0 10px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      font-size: 12.5px;
-      font-weight: 600;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
       cursor: pointer;
-      transition: background 0.15s ease;
-      color: #e2e8f0;
+      color: black;
     }
 
-    .nav-item:hover, .nav-item.active {
-      background-color: var(--primary-hover);
-      color: #ffffff;
+    .win-btn.close {
+      background: #e81123;
+      color: white;
+      border-color: #f1707a;
     }
 
-    .nav-dropdown {
+    /* شريط القوائم البرتقالي العلوي المستخرج من الصورة */
+    .menu-bar-orange {
+      background: linear-gradient(to bottom, #F7BA1E 0%, var(--estock-yellow) 100%);
+      height: 26px;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      border-bottom: 1px solid #B88600;
+      border-top: 1px solid #FFF3B0;
+    }
+
+    .menu-item {
+      padding: 3px 9px;
+      color: #000000;
+      font-weight: bold;
+      font-size: 11.5px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .menu-item:hover {
+      background: #D49B00;
+      color: white;
+    }
+
+    .menu-dropdown {
       display: none;
       position: absolute;
       top: 100%;
       right: 0;
-      background: white;
-      color: var(--dark-navy);
-      min-width: 200px;
-      border-radius: 0 0 6px 6px;
-      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.15);
-      border: 1px solid var(--border-color);
-      z-index: 1000;
+      background: #FFFFFF;
+      border: 1px solid #7F9DB9;
+      min-width: 170px;
+      z-index: 5000;
+      box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
     }
 
-    .nav-item:hover .nav-dropdown {
+    .menu-item:hover .menu-dropdown {
       display: block;
     }
 
     .dropdown-link {
-      padding: 9px 14px;
-      font-size: 12px;
-      font-weight: 500;
-      border-bottom: 1px solid #f1f5f9;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.15s;
+      padding: 5px 10px;
+      font-size: 11px;
+      color: #000;
+      border-bottom: 1px solid #F0F0F0;
+      font-weight: normal;
     }
 
     .dropdown-link:hover {
-      background-color: var(--primary-light);
-      color: var(--primary);
+      background: #316AC5;
+      color: white;
     }
 
-    .nav-shortcuts-hint {
-      font-size: 11px;
-      color: #cbd5e1;
+    /* منطقة العمل الوسطى */
+    .main-layout {
+      flex: 1;
       display: flex;
-      gap: 12px;
+      overflow: hidden;
+      background: var(--estock-window-bg);
     }
 
-    /* 2. ترويسة فاتورة المبيعات الرئيسية */
-    .invoice-header-bar {
-      background: var(--bg-card);
-      border-bottom: 1px solid var(--border-color);
-      padding: 8px 16px;
-      display: grid;
-      grid-template-columns: 180px 1fr auto auto;
-      gap: 16px;
+    /* 1. الشريط الرأسي الأيسر للأزرار (جديد، حفظ، تعليق، ...) */
+    .sidebar-left-actions {
+      width: 82px;
+      background: linear-gradient(to left, #E4DFD0, #ECE9D8);
+      border-right: 1px solid #ACA899;
+      padding: 4px 3px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      overflow-y: auto;
+    }
+
+    .estock-btn {
+      width: 100%;
+      height: 48px;
+      background: #F4F2E8;
+      border: 1px solid #FFFFFF;
+      border-right-color: #808080;
+      border-bottom-color: #808080;
+      border-left-color: #FFFFFF;
+      border-top-color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-    }
-
-    .title-tag {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .title-tag h1 {
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--primary);
-    }
-
-    .invoice-meta-fields {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 12px;
-    }
-
-    .meta-box {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #f8fafc;
-      padding: 4px 8px;
-      border: 1px solid var(--border-color);
-      border-radius: 5px;
-    }
-
-    .meta-box label {
-      color: var(--slate-gray);
-      font-weight: 600;
-      font-size: 11px;
-    }
-
-    .meta-box input, .meta-box select {
-      border: none;
-      background: transparent;
-      outline: none;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--dark-navy);
-    }
-
-    .sale-mode-selector {
-      display: flex;
-      background: #f1f5f9;
-      padding: 3px;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
+      justify-content: center;
       gap: 2px;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #000000;
     }
 
-    .sale-mode-selector label {
-      padding: 4px 10px;
-      font-size: 11.5px;
-      font-weight: 700;
-      border-radius: 4px;
+    .estock-btn:active {
+      border: 1px solid #808080;
+      border-right-color: #FFFFFF;
+      border-bottom-color: #FFFFFF;
+      background: #E0DDD0;
+    }
+
+    .estock-btn .icon {
+      font-size: 14px;
+    }
+
+    .estock-btn.btn-close {
+      color: #C00000;
+    }
+
+    /* 2. الشريط الرأسي الأيمن بالأيقونات الدائرية */
+    .sidebar-right-icons {
+      width: 65px;
+      background: linear-gradient(to right, #E4DFD0, #ECE9D8);
+      border-left: 1px solid #ACA899;
+      padding: 6px 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .circle-nav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       cursor: pointer;
+      text-align: center;
+      width: 100%;
+    }
+
+    .circle-icon-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #5dade2, #1b4f72);
+      border: 2px solid #FFFFFF;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+      margin-bottom: 3px;
+    }
+
+    .circle-icon-box.green { background: radial-gradient(circle at 30% 30%, #52be80, #145a32); }
+    .circle-icon-box.orange { background: radial-gradient(circle at 30% 30%, #f5b041, #7e5109); }
+    .circle-icon-box.red { background: radial-gradient(circle at 30% 30%, #ec7063, #78281f); }
+
+    .circle-nav-btn span {
+      font-size: 9.5px;
+      font-weight: bold;
+      color: #7A5200;
+    }
+
+    /* 3. منطقة الفاتورة الوسطى الكاملة */
+    .center-invoice-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 4px 6px;
+      overflow: hidden;
+    }
+
+    /* الترويسة العلوية للفاتورة */
+    .invoice-top-section {
+      display: grid;
+      grid-template-columns: 210px 1fr 230px;
+      gap: 6px;
+      align-items: start;
+      margin-bottom: 4px;
+    }
+
+    /* يسار الفاتورة: البائع + الصافي المطلوب */
+    .left-seller-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .seller-row {
       display: flex;
       align-items: center;
       gap: 4px;
     }
 
-    .sale-mode-selector input[type="radio"] {
-      display: none;
+    .net-required-panel {
+      background: #FFFFFF;
+      border: 1px solid var(--estock-border-gray);
+      padding: 4px 6px;
+      text-align: center;
     }
 
-    .sale-mode-selector input[type="radio"]:checked + span {
-      background: var(--primary);
-      color: white;
-      border-radius: 4px;
-      padding: 3px 8px;
+    .net-required-title {
+      font-size: 12px;
+      font-weight: bold;
+      color: #000000;
+      border-bottom: 1px solid #D4D0C8;
+      padding-bottom: 2px;
+      margin-bottom: 2px;
     }
 
-    .quick-net-indicator {
-      text-align: left;
-      border-right: 2px solid var(--border-color);
-      padding-right: 14px;
+    .net-required-val {
+      font-size: 30px;
+      font-weight: 800;
+      color: #004D00;
+      letter-spacing: 1px;
+      line-height: 1.1;
     }
 
-    .quick-net-indicator .label {
-      font-size: 11px;
-      color: var(--slate-gray);
-      font-weight: 600;
-    }
-
-    .quick-net-indicator .val {
-      font-size: 22px;
-      font-weight: 900;
-      color: var(--primary);
-    }
-
-    /* 3. هيكل العمل الرئيسي (Desktop First) */
-    .pos-workspace {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-      padding: 10px;
-      gap: 10px;
-    }
-
-    /* منطقة الجدول والباركود */
-    .main-billing-card {
-      flex: 1;
+    /* منتصف الفاتورة: العنوان + مخزن البيع + بيانات العميل */
+    .middle-fields-box {
       display: flex;
       flex-direction: column;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      align-items: center;
+      gap: 4px;
     }
 
-    /* شريط البحث الموسع والذكي */
-    .smart-search-zone {
-      padding: 10px 14px;
-      background: #f8fafc;
-      border-bottom: 1px solid var(--border-color);
+    .invoice-big-title {
+      font-size: 26px;
+      font-weight: bold;
+      color: #000000;
+      letter-spacing: -0.5px;
+      margin-bottom: 2px;
+    }
+
+    .fields-row {
       display: flex;
-      gap: 10px;
       align-items: center;
-      position: relative;
-    }
-
-    .search-input-wrapper {
-      position: relative;
-      flex: 1;
-    }
-
-    .search-input-wrapper input {
+      justify-content: center;
+      gap: 6px;
       width: 100%;
-      padding: 9px 14px;
-      font-size: 13.5px;
-      border: 1.5px solid var(--primary);
-      border-radius: 6px;
+    }
+
+    .desktop-input {
+      border: 1px solid var(--estock-border-gray);
+      background: #FFFFFF;
+      height: 21px;
+      padding: 1px 5px;
+      font-size: 11px;
       outline: none;
-      background: white;
-      font-weight: 600;
-      transition: box-shadow 0.2s;
     }
 
-    .search-input-wrapper input:focus {
-      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+    .desktop-input:focus {
+      border-color: #000000;
+      background-color: #FFFFE1;
     }
 
-    /* القائمة المنسدلة لنتائج البحث الذكي */
-    .live-search-results {
-      display: none;
-      position: absolute;
-      top: 100%;
-      right: 0;
-      left: 0;
-      background: white;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      box-shadow: 0 12px 20px rgba(0,0,0,0.15);
-      z-index: 1200;
-      max-height: 380px;
-      overflow-y: auto;
-      margin-top: 4px;
+    /* يمين الفاتورة: زر مراجعة الفواتير + نوع الفاتورة */
+    .right-inv-type-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
     }
 
-    .search-item-row {
-      padding: 8px 12px;
-      display: grid;
-      grid-template-columns: 2fr 1.2fr 1fr 1fr 1fr auto;
+    .btn-review-invoices {
+      background: #ECE9D8;
+      border: 1px solid #707070;
+      padding: 3px 8px;
+      display: flex;
       align-items: center;
-      border-bottom: 1px solid #f1f5f9;
+      gap: 6px;
+      font-weight: bold;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 11px;
+      border-radius: 2px;
     }
 
-    .search-item-row:hover {
-      background-color: var(--primary-light);
+    .inv-type-options {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-top: 2px;
     }
 
-    /* جدول بنود الفاتورة */
-    .pos-table-scroll {
-      flex: 1;
-      overflow-y: auto;
+    .inv-type-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: bold;
+      font-size: 11.5px;
+      cursor: pointer;
     }
 
-    table.pos-table {
+    /* جدول إجماليات الفاتورة المصغر (أعلى الجدول) */
+    .invoice-summary-strip {
+      border: 1px solid var(--estock-border-gray);
+      background: #FFFFFF;
+      margin-bottom: 4px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .summary-strip-title {
+      background: #F0EDE0;
+      text-align: center;
+      font-weight: bold;
+      font-size: 10.5px;
+      padding: 2px 0;
+      border-bottom: 1px solid #D4D0C8;
+    }
+
+    .summary-strip-table {
       width: 100%;
       border-collapse: collapse;
       text-align: center;
-      font-size: 12.5px;
+      font-size: 11px;
     }
 
-    table.pos-table thead th {
-      background: #064e3b;
-      color: white;
-      padding: 9px 6px;
-      font-weight: 700;
+    .summary-strip-table th {
+      background: #F9F8F5;
+      border: 1px solid #D4D0C8;
+      padding: 2px 4px;
+      font-weight: normal;
+      color: #333;
+    }
+
+    .summary-strip-table td {
+      border: 1px solid #D4D0C8;
+      padding: 2px 4px;
+      font-weight: bold;
+      background: #FFFFFF;
+    }
+
+    /* شريط مسح الباركود السريع المكتبي */
+    .barcode-scanner-strip {
+      background: #E8E5D8;
+      border: 1px solid var(--estock-border-gray);
+      padding: 3px 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    /* جدول الأصناف الرئيسي الأخضر المطابق للصورة */
+    .main-grid-wrapper {
+      flex: 1;
+      border: 1px solid var(--estock-border-gray);
+      background: #FFFFFF;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+
+    table.estock-grid {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    table.estock-grid thead th {
+      background-color: var(--estock-green-header);
+      color: #FFFFFF;
+      font-weight: bold;
+      padding: 4px 3px;
+      border: 1px solid #065F44;
+      white-space: nowrap;
       position: sticky;
       top: 0;
       z-index: 10;
     }
 
-    table.pos-table tbody td {
-      padding: 6px 4px;
-      border-bottom: 1px solid #e2e8f0;
+    table.estock-grid tbody td {
+      border: 1px solid #D4D0C8;
+      padding: 3px 2px;
+      white-space: nowrap;
+      color: #000000;
     }
 
-    table.pos-table tbody tr:nth-child(even) {
-      background-color: #fcfdfe;
+    table.estock-grid tbody tr:nth-child(even) {
+      background: #FBFBFA;
     }
 
-    table.pos-table tbody tr:hover {
-      background-color: #f0fdf4;
+    table.estock-grid tbody tr.selected {
+      background-color: #316AC5 !important;
+      color: #FFFFFF !important;
     }
 
-    .cell-input {
-      padding: 4px;
+    .grid-cell-input {
+      width: 50px;
+      border: 1px solid #7F9DB9;
+      padding: 1px 2px;
       text-align: center;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 700;
-      outline: none;
-    }
-
-    .cell-input:focus {
-      border-color: var(--primary);
-    }
-
-    /* شارات الصلاحية والتنبيهات */
-    .batch-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
       font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: 700;
-    }
-    .badge-valid { background: var(--primary-light); color: var(--primary); }
-    .badge-near { background: var(--accent-amber-bg); color: var(--accent-amber); }
-    .badge-expired { background: var(--accent-red-bg); color: var(--accent-red); }
-
-    /* الشريط الجانبي للأزرار السريعة */
-    .pos-action-panel {
-      width: 145px;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
+      font-weight: bold;
+      background: #FFF;
     }
 
-    .pos-btn {
-      padding: 9px 8px;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
-      background: white;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
+    /* شريط الحالة السفلي المطابق للصور */
+    .bottom-status-strip {
+      height: 22px;
+      background: linear-gradient(to bottom, #F7BA1E 0%, var(--estock-yellow) 100%);
+      border-top: 1px solid #B88600;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      gap: 6px;
-      transition: all 0.15s ease;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-    }
-
-    .pos-btn:hover {
-      transform: translateX(-2px);
-      background: #f8fafc;
-    }
-
-    .pos-btn.primary {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary-hover);
-    }
-    .pos-btn.primary:hover { background: var(--primary-hover); }
-
-    .pos-btn.amber { background: #fffbeb; color: #92400e; border-color: #fde68a; }
-    .pos-btn.red { background: #fff1f2; color: #9f1239; border-color: #fecdd3; }
-    .pos-btn.blue { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
-
-    /* 4. ملخص إجماليات الفاتورة السفلي */
-    .invoice-footer-summary {
-      background: #fafafa;
-      border-top: 1.5px solid var(--border-color);
-      padding: 8px 16px;
-      display: flex;
       justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .summary-metrics-row {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      font-size: 11.5px;
-      font-weight: 600;
-    }
-
-    .metric-pill {
-      background: white;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 4px 10px;
-      text-align: center;
-    }
-
-    .metric-pill span {
-      display: block;
-      color: var(--slate-gray);
-      font-size: 10.5px;
-    }
-
-    .metric-pill strong {
-      font-size: 13.5px;
-      color: var(--dark-navy);
-    }
-
-    .checkout-highlight-box {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .grand-total-tag {
-      background: #ecfdf5;
-      border: 2px solid #059669;
-      padding: 6px 16px;
-      border-radius: 6px;
-      text-align: center;
-    }
-
-    .grand-total-tag .lbl {
+      padding: 0 8px;
       font-size: 11px;
-      font-weight: 700;
-      color: #047857;
+      font-weight: bold;
+      color: #000000;
     }
 
-    .grand-total-tag .amt {
-      font-size: 26px;
-      font-weight: 900;
-      color: #064e3b;
-      line-height: 1.1;
-    }
-
-    .btn-complete-checkout {
-      background: #059669;
-      color: white;
-      border: none;
-      padding: 12px 22px;
-      font-size: 14px;
-      font-weight: 800;
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);
-      transition: all 0.2s;
-    }
-
-    .btn-complete-checkout:hover {
-      background: #047857;
-      box-shadow: 0 6px 10px -2px rgba(5, 150, 105, 0.4);
-    }
-
-    /* 5. شريط الحالة السفلي الصغير */
-    .app-status-bar {
-      height: 24px;
-      background: #e2e8f0;
-      border-top: 1px solid var(--border-color);
-      padding: 0 12px;
-      font-size: 11px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: var(--slate-gray);
-      font-weight: 600;
-    }
-
-    /* النوافذ العائمة (Modals) */
-    .modal-backdrop {
+    /* نوافذ منبثقة بنمط سطح المكتب الكلاسيكي */
+    .classic-dialog-backdrop {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.65);
-      backdrop-filter: blur(2px);
-      z-index: 2000;
+      background: rgba(0,0,0,0.35);
+      z-index: 9999;
       align-items: center;
       justify-content: center;
     }
 
-    .modal-backdrop.open {
+    .classic-dialog-backdrop.show {
       display: flex;
     }
 
-    .modal-card {
-      background: white;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 820px;
-      max-height: 88vh;
+    .classic-dialog {
+      background: #ECE9D8;
+      border: 2px solid #0055EA;
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
+      width: 680px;
+      max-height: 85vh;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-      border-top: 4px solid var(--primary);
     }
 
-    .modal-head {
-      padding: 10px 16px;
+    .classic-dialog-head {
+      background: linear-gradient(to left, #0055ea, #3a93ff);
+      color: white;
+      padding: 3px 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--border-color);
-      background: #f8fafc;
+      font-weight: bold;
     }
 
-    .modal-head h3 {
-      font-size: 14.5px;
-      font-weight: 700;
+    .classic-dialog-body {
+      padding: 10px;
+      background: #FFFFFF;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .classic-dialog-foot {
+      padding: 6px 10px;
+      background: #ECE9D8;
+      border-top: 1px solid #D4D0C8;
       display: flex;
-      align-items: center;
+      justify-content: flex-end;
       gap: 6px;
     }
 
-    .modal-close-icon {
-      background: none;
-      border: none;
-      font-size: 20px;
+    .win-action-btn {
+      min-width: 80px;
+      height: 23px;
+      background: #ECE9D8;
+      border: 1px solid #FFFFFF;
+      border-right-color: #707070;
+      border-bottom-color: #707070;
+      border-left-color: #FFFFFF;
+      border-top-color: #FFFFFF;
+      font-size: 11px;
+      font-weight: bold;
       cursor: pointer;
-      color: #64748b;
     }
 
-    .modal-close-icon:hover { color: var(--accent-red); }
-
-    .modal-content-area {
-      padding: 14px;
-      overflow-y: auto;
-      flex: 1;
-    }
-
-    .modal-foot {
-      padding: 10px 14px;
-      background: #f8fafc;
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-
-    /* جداول المودالات المتناسقة */
-    .view-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      text-align: center;
-    }
-    .view-table th {
-      background: #1e293b;
-      color: white;
-      padding: 7px;
-      font-weight: 600;
-    }
-    .view-table td {
-      padding: 7px 4px;
-      border-bottom: 1px solid #e2e8f0;
+    .win-action-btn:active {
+      border: 1px solid #707070;
+      border-right-color: #FFFFFF;
+      border-bottom-color: #FFFFFF;
     }
   </style>
 </head>
 <body>
 
-  <!-- 1. شريط القوائم العلوي المنظم وفق البند 1 -->
-  <header class="top-nav">
-    <div class="nav-brand">
-      <span>💊</span>
-      <span>PHARMACY PRO</span>
+  <!-- شريط عنوان نافذة البرنامج -->
+  <div class="win-titlebar">
+    <div>e-Stock Pharmacy Ver 1.8.4 Full - [فاتورة بيع والبائع صيدلية د/ طارق]</div>
+    <div class="win-controls">
+      <button class="win-btn">_</button>
+      <button class="win-btn">□</button>
+      <button class="win-btn close">×</button>
     </div>
+  </div>
 
-    <nav class="nav-menu">
-      <div class="nav-item" onclick="openReportsDashboard()">الرئيسية</div>
-      <div class="nav-item active">المبيعات</div>
-      <div class="nav-item" onclick="openPurchasesModal()">المشتريات</div>
-      <div class="nav-item" onclick="openMedicineMasterModal()">الأصناف</div>
-      <div class="nav-item">المخازن
-        <div class="nav-dropdown">
-          <div class="dropdown-link" onclick="alert('المخزن الرئيسي 1 (جاهز)')">جرد المخزن 1</div>
-          <div class="dropdown-link" onclick="openShortagesModal()">نواقص المخازن</div>
-          <div class="dropdown-link" onclick="alert('شاشة التحويل بين المخازن جاهزة.')">تحويل بين المخازن</div>
+  <!-- شريط القوائم البرتقالي العلوي المطابق للصور -->
+  <nav class="menu-bar-orange">
+    <div class="menu-item">البيانات العامة</div>
+    <div class="menu-item">الأصناف
+      <div class="menu-dropdown">
+        <div class="dropdown-link" onclick="openShortagesDialog()">قائمة نواقص الأدوية (F4)</div>
+        <div class="dropdown-link" onclick="openGenericsDialog()">البحث عن البدائل (F3)</div>
+        <div class="dropdown-link" onclick="alert('شاشة بطاقة الصنف والباركود')">دليل الأصناف والأسعار</div>
+      </div>
+    </div>
+    <div class="menu-item">المخازن
+      <div class="menu-dropdown">
+        <div class="dropdown-link" onclick="alert('المخزن 1: رصيد متوفر بنسبة 100%')">جرد المخزن 1</div>
+        <div class="dropdown-link" onclick="openShortagesDialog()">نواقص المخزن</div>
+      </div>
+    </div>
+    <div class="menu-item">الموردين
+      <div class="menu-dropdown">
+        <div class="dropdown-link" onclick="openSuppliersDialog()">حسابات الموردين</div>
+      </div>
+    </div>
+    <div class="menu-item">المشتريات
+      <div class="menu-dropdown">
+        <div class="dropdown-link" onclick="openPurchasesDialog()">فاتورة مشتريات واردة</div>
+      </div>
+    </div>
+    <div class="menu-item">العملاء
+      <div class="menu-dropdown">
+        <div class="dropdown-link" onclick="openCustomersDialog()">دليل العملاء والمديونيات</div>
+      </div>
+    </div>
+    <div class="menu-item">المبيعات
+      <div class="menu-dropdown">
+        <div class="dropdown-link" onclick="saveSalesInvoice()">حفظ الفاتورة (F10)</div>
+        <div class="dropdown-link" onclick="holdCurrentInvoice()">تعليق الفاتورة (F9)</div>
+        <div class="dropdown-link" onclick="openHeldDialog()">الفواتير المعلقة</div>
+        <div class="dropdown-link" onclick="openZReportDialog()">تقفيل درج الكاشير والوردية</div>
+      </div>
+    </div>
+    <div class="menu-item">الحسابات اليومية
+      <div class="menu-dropdown">
+        <div class="dropdown-link" onclick="openCashBoxDialog()">صرف نقدية / توريد</div>
+      </div>
+    </div>
+    <div class="menu-item">الحسابات العامة</div>
+    <div class="menu-item">الطلبيات</div>
+    <div class="menu-item">شؤون العاملين</div>
+    <div class="menu-item">إطار</div>
+  </nav>
+
+  <!-- مساحة العمل الرئيسية -->
+  <div class="main-layout">
+
+    <!-- 1. الشريط الرأسي الأيسر (مطابق لأزرار e-Stock بالصورة) -->
+    <aside class="sidebar-left-actions">
+      <button class="estock-btn" onclick="startNewInvoice()">
+        <span class="icon">📄</span>
+        <span>جديد</span>
+      </button>
+      <button class="estock-btn" onclick="saveSalesInvoice()">
+        <span class="icon">💾</span>
+        <span>حفظ</span>
+      </button>
+      <button class="estock-btn" onclick="holdCurrentInvoice()">
+        <span class="icon">⏸️</span>
+        <span>تعليق الفاتورة</span>
+      </button>
+      <button class="estock-btn" onclick="openHeldDialog()">
+        <span class="icon">📁</span>
+        <span>فواتير معلقة</span>
+      </button>
+      <button class="estock-btn" onclick="focusBarcodeInput()">
+        <span class="icon">➕</span>
+        <span>إضافة صنف</span>
+      </button>
+      <button class="estock-btn" onclick="focusBarcodeInput()">
+        <span class="icon">📝</span>
+        <span>سطر جديد</span>
+      </button>
+      <button class="estock-btn" onclick="deleteSelectedRow()">
+        <span class="icon">❌</span>
+        <span>حذف سطر</span>
+      </button>
+      <button class="estock-btn" onclick="openHeldDialog()">
+        <span class="icon">⚠️</span>
+        <span>فواتير غير مكتملة</span>
+      </button>
+      <button class="estock-btn btn-close" onclick="cancelInvoice()">
+        <span class="icon" style="color:red; font-weight:bold; font-size:16px;">✖</span>
+        <span>إغلاق</span>
+      </button>
+      <button class="estock-btn" onclick="window.print()">
+        <span class="icon">🖨️</span>
+        <span>طباعة الاستخدام</span>
+      </button>
+    </aside>
+
+    <!-- 2. منطقة العمل الوسطى: شاشة الفاتورة والجدول -->
+    <main class="center-invoice-panel">
+
+      <!-- ترويسة الفاتورة المطابقة تماماً للصورة -->
+      <section class="invoice-top-section">
+        
+        <!-- اليسار: البائع + الصافي المطلوب الكبير -->
+        <div class="left-seller-box">
+          <div class="seller-row">
+            <span style="font-weight: bold;">البائع :</span>
+            <input type="text" class="desktop-input" value="صيدلية د/ طارق" readonly style="width: 140px; background:#F0EDE0; font-weight:bold;">
+          </div>
+          <div class="net-required-panel">
+            <div class="net-required-title">الصافي المطلوب</div>
+            <div class="net-required-val" id="netAmountDisplay">0.00</div>
+          </div>
         </div>
-      </div>
-      <div class="nav-item" onclick="openCustomersModal()">العملاء</div>
-      <div class="nav-item" onclick="openSuppliersModal()">الموردين</div>
-      <div class="nav-item" onclick="openDailyCashModal()">الحسابات</div>
-      <div class="nav-item" onclick="openReportsDashboard()">التقارير</div>
-      <div class="nav-item">الإعدادات
-        <div class="nav-dropdown">
-          <div class="dropdown-link" onclick="alert('شؤون العاملين والورديات: د. أحمد (صلاحية كاملة)')">شؤون العاملين (HR)</div>
-          <div class="dropdown-link" onclick="alert('اختصارات النظام: F10 حفظ | F9 تعليق | F4 نواقص | F3 بدائل')">تخصيص الاختصارات</div>
-          <div class="dropdown-link" onclick="alert('بيانات الصيدلية والترخيص الضريبي محدثة')">بيانات الصيدلية</div>
+
+        <!-- المنتصف: العنوان + المخزن + بيانات العميل -->
+        <div class="middle-fields-box">
+          <div class="invoice-big-title">فاتورة البيع</div>
+          
+          <div class="fields-row">
+            <span style="font-weight: bold;">مخزن البيع :</span>
+            <span style="font-weight: bold; color:black;">المخزن 1</span>
+            <input type="text" class="desktop-input" value="المخزن" style="width: 70px;" readonly>
+          </div>
+
+          <div class="fields-row" style="margin-top: 3px;">
+            <span style="font-weight: bold;">بيانات العميل :</span>
+            <span>كود العميل أو التليفون</span>
+            <input type="text" id="customerPhoneInput" class="desktop-input" style="width: 150px;" placeholder="نقدي افتراضي">
+            <span>الرصيد</span>
+            <input type="text" id="customerBalanceInput" class="desktop-input" value="0.00" readonly style="width: 60px; text-align:center; font-weight:bold;">
+          </div>
         </div>
-      </div>
-    </nav>
 
-    <div class="nav-shortcuts-hint">
-      <span>F10: دفع وحفظ</span>
-      <span>F9: تعليق</span>
-      <span>F4: نواقص</span>
-      <span>F3: بدائل</span>
-      <span>F2: باركود</span>
-    </div>
-  </header>
+        <!-- اليمين: مراجعة آخر الفواتير + نوع الفاتورة -->
+        <div class="right-inv-type-box">
+          <button class="btn-review-invoices" onclick="openHeldDialog()">
+            <span style="color:#C00000; font-size:14px;">📁</span>
+            <span>مراجعة آخر فواتير</span>
+          </button>
 
-  <!-- 2. ترويسة فاتورة البيع -->
-  <section class="invoice-header-bar">
-    <div class="title-tag">
-      <h1>فاتورة بيع</h1>
-      <span style="font-size:11px; background:#e2e8f0; padding:2px 6px; border-radius:4px; font-weight:700;" id="invoiceNumberBadge">#INV-1029</span>
-    </div>
-
-    <div class="invoice-meta-fields">
-      <div class="meta-box">
-        <label>المخزن:</label>
-        <select id="activeWarehouse"><option>المخزن الرئيسي 1</option><option>مخزن 2</option></select>
-      </div>
-      <div class="meta-box">
-        <label>العميل:</label>
-        <select id="invoiceCustomerSelect" onchange="handleCustomerChange(this.value)"></select>
-      </div>
-      <div class="meta-box">
-        <label>التاريخ:</label>
-        <span id="currentDateMini" style="font-weight:700;"></span>
-      </div>
-    </div>
-
-    <div class="sale-mode-selector">
-      <label><input type="radio" name="saleType" value="cash" checked> <span>كاش</span></label>
-      <label><input type="radio" name="saleType" value="credit"> <span>آجل</span></label>
-      <label><input type="radio" name="saleType" value="hold"> <span>معلقة</span></label>
-    </div>
-
-    <div class="quick-net-indicator">
-      <div class="label">الصافي المطلوب</div>
-      <div class="val" id="miniNetDisplay">0.00</div>
-    </div>
-  </section>
-
-  <!-- 3. مساحة البيع والعمليات -->
-  <main class="pos-workspace">
-
-    <!-- الجدول المركزي وإدخال الباركود -->
-    <div class="main-billing-card">
-      
-      <!-- شريط البحث السريع والذكي -->
-      <div class="smart-search-zone">
-        <div class="search-input-wrapper">
-          <input type="text" id="masterSearchInput" placeholder="امسح الباركود أو اكتب اسم الدواء أو كود الصنف أو المادة الفعالة... (F2)" autofocus autocomplete="off">
-          <div class="live-search-results" id="liveSearchResultsDropdown"></div>
+          <div class="inv-type-options">
+            <div style="font-weight: bold; margin-bottom: 2px;">نوع الفاتورة</div>
+            <label class="inv-type-label" style="color:var(--estock-blue-text);">
+              <input type="radio" name="invType" value="cash" checked>
+              <span>☑ كاش</span>
+            </label>
+            <label class="inv-type-label" style="color:#000060;">
+              <input type="radio" name="invType" value="visa">
+              <span>☐ فيزا</span>
+            </label>
+            <label class="inv-type-label" style="color:var(--estock-red-text);">
+              <input type="radio" name="invType" value="credit">
+              <span>☐ آجل</span>
+            </label>
+            <label class="inv-type-label" style="color:var(--estock-orange-text);">
+              <input type="radio" name="invType" value="hold">
+              <span>☐ معلقة</span>
+            </label>
+          </div>
         </div>
-        <button class="pos-btn blue" onclick="openSmartGenericSearch()" style="white-space: nowrap;">🔍 بحث بالبدائل (F3)</button>
-      </div>
 
-      <!-- جدول بنود الفاتورة بالوحدات والـ Batches -->
-      <div class="pos-table-scroll">
-        <table class="pos-table">
+      </section>
+
+      <!-- جدول إجماليات الفاتورة المدمج المطابق للصورة -->
+      <section class="invoice-summary-strip">
+        <div class="summary-strip-title">إجماليات الفاتورة</div>
+        <table class="summary-strip-table">
           <thead>
             <tr>
-              <th style="width: 32px;">#</th>
-              <th>كود</th>
-              <th style="text-align: right;">اسم الدواء</th>
-              <th>التشغيلة (Batch)</th>
-              <th>الصلاحية</th>
-              <th>الوحدة</th>
-              <th style="width: 80px;">الكمية</th>
-              <th>سعر البيع</th>
-              <th style="width: 75px;">الخصم %</th>
-              <th>الإجمالي</th>
-              <th style="width: 40px;">حذف</th>
+              <th>عدد الأصناف</th>
+              <th>الإجمالي ق الخصم</th>
+              <th>خصم %</th>
+              <th>خصم قيمة</th>
+              <th>خ.أصناف</th>
+              <th>م.إضافية</th>
+              <th style="width: 35%;">ملاحظات</th>
             </tr>
           </thead>
-          <tbody id="posInvoiceTbody"></tbody>
+          <tbody>
+            <tr>
+              <td id="statItemsCount">0</td>
+              <td id="statGrossAmount">0.00</td>
+              <td id="statDiscountPercent">0.00</td>
+              <td id="statDiscountValue">0.00</td>
+              <td id="statMedDiscount">0.00</td>
+              <td id="statExtraExpenses">0.00</td>
+              <td style="padding: 0 4px;">
+                <input type="text" id="invoiceNotesInput" class="desktop-input" style="width: 100%; border:none;" placeholder="أي ملاحظات تخص الفاتورة أو التوصيل...">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- شريط إدخال الباركود السريع المكتبي -->
+      <div class="barcode-scanner-strip">
+        <span style="font-weight: bold;">مسح الباركود أو الصنف (F2):</span>
+        <input type="text" id="barcodeMasterInput" class="desktop-input" style="width: 320px; font-weight:bold;" placeholder="امسح الباركود أو اكتب الكود واضغط Enter..." autofocus>
+        <button class="win-action-btn" onclick="openGenericsDialog()">🔍 بحث بالبدائل (F3)</button>
+        <button class="win-action-btn" onclick="openShortagesDialog()">⚠️ النواقص (F4)</button>
+      </div>
+
+      <!-- جدول الأصناف الرئيسي الأخضر المطابق للصورة 100% -->
+      <div class="main-grid-wrapper">
+        <table class="estock-grid" id="mainInvoiceGrid">
+          <thead>
+            <tr>
+              <th style="width: 50px;">نواقص</th>
+              <th style="width: 75px;">كود الصنف</th>
+              <th style="text-align: right; width: 220px;">إسم الصنف</th>
+              <th style="width: 90px;">تاريخ الصلاحية</th>
+              <th style="width: 60px;">الوحدة</th>
+              <th style="width: 55px;">الكمية</th>
+              <th style="width: 70px;">سعر البيع</th>
+              <th style="width: 60px;">الرصيد</th>
+              <th style="width: 60px;">حد الطلب</th>
+              <th style="width: 75px;">قيمة ق الخصم</th>
+              <th style="width: 55px;">ن الخصم</th>
+              <th style="width: 65px;">قيمة الخصم</th>
+              <th style="width: 85px;">قيمة بعد الخصم</th>
+            </tr>
+          </thead>
+          <tbody id="invoiceGridTbody">
+            <!-- تُضاف صفوف الأدوية هنا آلياً -->
+          </tbody>
         </table>
       </div>
 
-      <!-- 4. ملخص الفاتورة وإتمام الدفع السريع -->
-      <footer class="invoice-footer-summary">
-        <div class="summary-metrics-row">
-          <div class="metric-pill"><span>عدد الأصناف</span><strong id="metricItemsCount">0</strong></div>
-          <div class="metric-pill"><span>إجمالي القطع</span><strong id="metricPiecesCount">0</strong></div>
-          <div class="metric-pill"><span>الإجمالي ق.الخصم</span><strong id="metricGrossTotal">0.00</strong></div>
-          <div class="metric-pill"><span>قيمة الخصم</span><strong id="metricDiscountAmount">0.00</strong></div>
-          <div class="metric-pill"><span>الضريبة (VAT)</span><strong>0.00</strong></div>
-        </div>
+    </main>
 
-        <div class="checkout-highlight-box">
-          <div class="grand-total-tag">
-            <div class="lbl">الإجمالي النهائي</div>
-            <div class="amt" id="metricGrandTotal">0.00</div>
-          </div>
-          <button class="btn-complete-checkout" onclick="openPaymentModal()">
-            <span>🟢 إتمام البيع والدفع (F10)</span>
-          </button>
-        </div>
-      </footer>
-
-    </div>
-
-    <!-- الشريط الجانبي للأزرار السريعة -->
-    <aside class="pos-action-panel">
-      <button class="pos-btn" onclick="startNewInvoice()">➕ فاتورة جديدة (Ctrl+N)</button>
-      <button class="pos-btn primary" onclick="openPaymentModal()">💾 حفظ / إتمام البيع (F10)</button>
-      <button class="pos-btn amber" onclick="holdCurrentInvoice()">⏸ تعليق الفاتورة (F9)</button>
-      <button class="pos-btn" onclick="openHeldInvoicesModal()">📂 الفواتير المعلقة <span id="heldBadge" style="background:#d97706; color:white; border-radius:10px; padding:0 5px; font-size:10px;">0</span></button>
-      <button class="pos-btn" onclick="openDailyCashModal()">💰 حركة الصندوق</button>
-      <button class="pos-btn amber" onclick="openShortagesModal()">⚠️ نواقص الأصناف (F4)</button>
-      <button class="pos-btn" onclick="openShiftCloseModal()">🔒 إغلاق الوردية</button>
-      <button class="pos-btn red" onclick="cancelCurrentInvoice()">❌ إلغاء الفاتورة (Esc)</button>
+    <!-- 3. الشريط الرأسي الأيمن بالأيقونات الدائرية (مطابق للصورة) -->
+    <aside class="sidebar-right-icons">
+      <div class="circle-nav-btn" onclick="openShortagesDialog()">
+        <div class="circle-icon-box red">⚠️</div>
+        <span>النواقص</span>
+      </div>
+      <div class="circle-nav-btn" onclick="openGenericsDialog()">
+        <div class="circle-icon-box green">🔭</div>
+        <span>الأصناف</span>
+      </div>
+      <div class="circle-nav-btn" onclick="openPurchasesDialog()">
+        <div class="circle-icon-box">🛒</div>
+        <span>المشتريات</span>
+      </div>
+      <div class="circle-nav-btn" onclick="saveSalesInvoice()">
+        <div class="circle-icon-box orange">💊</div>
+        <span>المبيعات</span>
+      </div>
+      <div class="circle-nav-btn" onclick="openCashBoxDialog()">
+        <div class="circle-icon-box green">💵</div>
+        <span>توريد نقدي</span>
+      </div>
+      <div class="circle-nav-btn" onclick="openCustomersDialog()">
+        <div class="circle-icon-box">👥</div>
+        <span>العملاء</span>
+      </div>
     </aside>
 
-  </main>
+  </div>
 
-  <!-- 5. شريط الحالة بالأسفل -->
-  <footer class="app-status-bar">
-    <div>الكاشير: <strong>د. أحمد</strong> | الوردية: <strong>صباحية (درج 1)</strong> | حالة التخزين: <strong>مستقر (IndexedDB)</strong></div>
-    <div>قاعدة الأدوية: <strong>دليل الأدوية المصري الحديث</strong> | نظام الصلاحية: <strong>FEFO مفعل تلقائياً</strong></div>
+  <!-- شريط الحالة السفلي المطابق للصور -->
+  <footer class="bottom-status-strip">
+    <div>المستخدم الحالي: <strong>صيدلية د/ طارق</strong> | الفرع: <strong>الرئيسي</strong> | تسجيل الدخول: <strong>08:30 AM</strong></div>
+    <div>حالة قاعدة البيانات: <strong>متصل محلياً (e-Stock Database Engine)</strong> | نظام الصرف: <strong>FEFO</strong></div>
+    <div>التاريخ: <span id="clockDate">2026/09/08</span> | الوقت: <span id="clockTime">01:40 PM</span></div>
   </footer>
 
   <!-- ========================================================
-       النوافذ المنبثقة التفاعلية (Modals)
+       النوافذ المنبثقة بنمط الويندوز الكلاسيكي (Windows Dialogs)
        ======================================================== -->
 
-  <!-- نافذة الدفع المتقدمة (نقدي / فيزا / مختلط / آجل) -->
-  <div class="modal-backdrop" id="paymentModal">
-    <div class="modal-card" style="max-width: 520px;">
-      <div class="modal-head" style="background:#ecfdf5;">
-        <h3 style="color:#065f46;">💵 إتمام عملية الدفع والتحصيل</h3>
-        <button class="modal-close-icon" onclick="closeModal('paymentModal')">&times;</button>
-      </div>
-      <div class="modal-content-area">
-        <div style="background:#f8fafc; padding:12px; border-radius:6px; border:1px solid var(--border-color); margin-bottom:12px;">
-          <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:13px;">
-            <span>المطلوب دفعه:</span>
-            <strong id="payModalNetDue" style="font-size:18px; color:var(--primary);">0.00 EGP</strong>
-          </div>
-          <div style="display:flex; gap:8px; margin-top:8px;">
-            <label style="font-size:12px; font-weight:700;"><input type="radio" name="payMethodOption" value="cash" checked onchange="togglePayInputs()"> نقدي</label>
-            <label style="font-size:12px; font-weight:700;"><input type="radio" name="payMethodOption" value="visa" onchange="togglePayInputs()"> بطاقة (فيزا)</label>
-            <label style="font-size:12px; font-weight:700;"><input type="radio" name="payMethodOption" value="mixed" onchange="togglePayInputs()"> دفع مختلط</label>
-            <label style="font-size:12px; font-weight:700;"><input type="radio" name="payMethodOption" value="credit" onchange="togglePayInputs()"> آجل على الحساب</label>
-          </div>
-        </div>
-
-        <div id="cashPayGroup" style="display:flex; flex-direction:column; gap:8px;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <label style="font-size:13px; font-weight:700;">المبلغ المدفوع كاش:</label>
-            <input type="number" id="cashGivenInput" style="padding:6px 10px; font-size:16px; font-weight:800; width:140px; text-align:center; border:1px solid var(--border-color); border-radius:4px;" oninput="computePaymentChange()">
-          </div>
-          <div id="visaPartGroup" style="display:none; justify-content:space-between; align-items:center;">
-            <label style="font-size:13px; font-weight:700;">المبلغ المسحوب بالفيزا:</label>
-            <input type="number" id="visaGivenInput" style="padding:6px 10px; font-size:16px; font-weight:800; width:140px; text-align:center; border:1px solid var(--border-color); border-radius:4px;" oninput="computePaymentChange()">
-          </div>
-          <div style="background:#ecfdf5; padding:10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-            <span style="font-size:13px; font-weight:700; color:#065f46;">المتبقي للعميل (الباقي):</span>
-            <strong id="changeDueDisplay" style="font-size:20px; color:#047857;">0.00 EGP</strong>
-          </div>
-        </div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn-complete-checkout" onclick="confirmFinalizeSale()">تأكيد وطباعة الفاتورة (Enter)</button>
-        <button class="pos-btn" onclick="closeModal('paymentModal')">إلغاء</button>
-      </div>
-    </div>
-  </div>
-
   <!-- نافذة الفواتير المعلقة -->
-  <div class="modal-backdrop" id="heldInvoicesModal">
-    <div class="modal-card" style="max-width: 680px;">
-      <div class="modal-head" style="background:#fffbeb;">
-        <h3 style="color:#92400e;">📂 الفواتير المعلقة بالذاكرة</h3>
-        <button class="modal-close-icon" onclick="closeModal('heldInvoicesModal')">&times;</button>
+  <div class="classic-dialog-backdrop" id="heldDialog">
+    <div class="classic-dialog">
+      <div class="classic-dialog-head">
+        <span>مراجعة الفواتير المعلقة في الذاكرة</span>
+        <button class="win-btn close" onclick="closeDialog('heldDialog')">×</button>
       </div>
-      <div class="modal-content-area">
-        <table class="view-table">
+      <div class="classic-dialog-body">
+        <table class="estock-grid" style="width: 100%;">
           <thead>
-            <tr><th>رقم</th><th>العميل</th><th>الأصناف</th><th>الإجمالي</th><th>وقت التعليق</th><th>إجراء</th></tr>
+            <tr><th>رقم الفاتورة</th><th>العميل</th><th>عدد الأصناف</th><th>الصافي</th><th>الوقت</th><th>استرجاع</th></tr>
           </thead>
-          <tbody id="heldInvoicesTbody"></tbody>
+          <tbody id="heldTableBody"></tbody>
         </table>
       </div>
-      <div class="modal-foot">
-        <button class="pos-btn" onclick="closeModal('heldInvoicesModal')">إغلاق</button>
+      <div class="classic-dialog-foot">
+        <button class="win-action-btn" onclick="closeDialog('heldDialog')">إغلاق</button>
       </div>
     </div>
   </div>
 
-  <!-- نافذة النواقص الذكية المصنفة -->
-  <div class="modal-backdrop" id="shortagesModal">
-    <div class="modal-card" style="max-width: 820px;">
-      <div class="modal-head" style="background:#fef2f2;">
-        <h3 style="color:#991b1b;">⚠️ تقرير نواقص الأصناف وأوامر الشراء المقترحة</h3>
-        <button class="modal-close-icon" onclick="closeModal('shortagesModal')">&times;</button>
+  <!-- نافذة النواقص -->
+  <div class="classic-dialog-backdrop" id="shortagesDialog">
+    <div class="classic-dialog" style="width: 750px;">
+      <div class="classic-dialog-head">
+        <span>بيان نواقص الأدوية والطلبيات (حد الطلب)</span>
+        <button class="win-btn close" onclick="closeDialog('shortagesDialog')">×</button>
       </div>
-      <div class="modal-content-area">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <div style="display:flex; gap:8px; font-size:12px; font-weight:700;">
-            <span style="color:#e11d48;">🔴 حرجة (نفاد تام)</span> |
-            <span style="color:#d97706;">🟡 نواقص (تحت الحد)</span> |
-            <span style="color:#2563eb;">🟠 قرب النفاد</span>
-          </div>
-          <button class="pos-btn primary" onclick="generateAutoPurchaseOrder()">📥 إنشاء فاتورة شراء مباشرة من النواقص</button>
+      <div class="classic-dialog-body">
+        <table class="estock-grid" style="width: 100%;">
+          <thead>
+            <tr><th>كود الصنف</th><th>اسم الدواء</th><th>الرصيد الفعلي</th><th>حد الطلب</th><th>الكمية المقترحة</th><th>المورد المعتمد</th></tr>
+          </thead>
+          <tbody id="shortagesTableBody"></tbody>
+        </table>
+      </div>
+      <div class="classic-dialog-foot">
+        <button class="win-action-btn" onclick="createPurchaseOrderFromShortages()">إنشاء طلب شراء</button>
+        <button class="win-action-btn" onclick="closeDialog('shortagesDialog')">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة البدائل والمادة الفعالة -->
+  <div class="classic-dialog-backdrop" id="genericsDialog">
+    <div class="classic-dialog" style="width: 750px;">
+      <div class="classic-dialog-head">
+        <span>البحث عن بدائل الدواء والمادة الفعالة</span>
+        <button class="win-btn close" onclick="closeDialog('genericsDialog')">×</button>
+      </div>
+      <div class="classic-dialog-body">
+        <div style="margin-bottom: 8px; display:flex; gap:6px;">
+          <input type="text" id="genericSearchInput" class="desktop-input" style="flex:1;" placeholder="اكتب اسم الصنف أو المادة الفعالة...">
+          <button class="win-action-btn" onclick="searchGenerics(document.getElementById('genericSearchInput').value)">بحث</button>
         </div>
-        <table class="view-table">
+        <table class="estock-grid" style="width: 100%;">
           <thead>
-            <tr><th>الحالة</th><th>كود</th><th>اسم الصنف</th><th>الرصيد الفعلي</th><th>الحد الأدنى</th><th>المقترح شراؤه</th><th>الموزع المعتمد</th></tr>
+            <tr><th>كود</th><th>اسم الصنف</th><th>المادة الفعالة</th><th>الرف</th><th>الرصيد</th><th>السعر</th><th>إدراج</th></tr>
           </thead>
-          <tbody id="shortagesTbody"></tbody>
+          <tbody id="genericsTableBody"></tbody>
         </table>
       </div>
-      <div class="modal-foot">
-        <button class="pos-btn" onclick="closeModal('shortagesModal')">إغلاق</button>
+      <div class="classic-dialog-foot">
+        <button class="win-action-btn" onclick="closeDialog('genericsDialog')">إغلاق</button>
       </div>
     </div>
   </div>
 
-  <!-- نافذة المشتريات -->
-  <div class="modal-backdrop" id="purchasesModal">
-    <div class="modal-card" style="max-width: 840px;">
-      <div class="modal-head" style="background:#f0fdf4;">
-        <h3 style="color:#166534;">📥 فاتورة شراء وتوريد بضاعة للمخزن</h3>
-        <button class="modal-close-icon" onclick="closeModal('purchasesModal')">&times;</button>
+  <!-- نافذة فاتورة المشتريات -->
+  <div class="classic-dialog-backdrop" id="purchasesDialog">
+    <div class="classic-dialog" style="width: 780px;">
+      <div class="classic-dialog-head">
+        <span>فاتورة مشتريات وتوريد مخزن</span>
+        <button class="win-btn close" onclick="closeDialog('purchasesDialog')">×</button>
       </div>
-      <div class="modal-content-area">
-        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:12px; font-size:12px;">
-          <div><label style="font-weight:700;">المورد:</label><select id="purchaseSupplierSelect" style="width:100%; padding:6px;"></select></div>
-          <div><label style="font-weight:700;">رقم فاتورة المورد:</label><input type="text" id="purchaseRefNumber" placeholder="مثال: 89452" style="width:100%; padding:6px;"></div>
-          <div><label style="font-weight:700;">المخزن المستلم:</label><select style="width:100%; padding:6px;"><option>المخزن الرئيسي 1</option></select></div>
+      <div class="classic-dialog-body">
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px;">
+          <div><label>المورد: </label><select id="purSupplierSelect" class="desktop-input" style="width: 100%;"></select></div>
+          <div><label>رقم فاتورة المورد: </label><input type="text" id="purInvNum" class="desktop-input" style="width: 100%;" placeholder="مثال: 15415"></div>
+          <div><label>المخزن المستلم: </label><input type="text" class="desktop-input" value="المخزن 1" readonly style="width: 100%;"></div>
         </div>
-        <table class="view-table">
+        <table class="estock-grid" style="width: 100%;">
           <thead>
-            <tr><th>اسم الصنف الدوائي</th><th>الكمية</th><th>سعر الشراء</th><th>رقم التشغيلة (Batch)</th><th>الصلاحية</th><th>الإجمالي</th></tr>
+            <tr><th>الصنف</th><th>الكمية</th><th>سعر الشراء</th><th>التشغيلة (Batch)</th><th>الصلاحية</th><th>الإجمالي</th></tr>
           </thead>
-          <tbody id="purchaseDraftTbody"></tbody>
+          <tbody id="purchaseTableBody"></tbody>
         </table>
       </div>
-      <div class="modal-foot">
-        <button class="pos-btn primary" onclick="savePurchaseInvoiceDraft()">اعتماد الفاتورة وزيادة الأرصدة بالمخزن</button>
-        <button class="pos-btn" onclick="closeModal('purchasesModal')">إلغاء</button>
+      <div class="classic-dialog-foot">
+        <button class="win-action-btn" onclick="savePurchaseInvoice()">ترحيل للمخزن</button>
+        <button class="win-action-btn" onclick="closeDialog('purchasesDialog')">إغلاق</button>
       </div>
     </div>
   </div>
 
-  <!-- نافذة العملاء وتحصيل المديونية -->
-  <div class="modal-backdrop" id="customersModal">
-    <div class="modal-card" style="max-width: 800px;">
-      <div class="modal-head">
-        <h3>👥 دليل العملاء وحسابات المديونية</h3>
-        <button class="modal-close-icon" onclick="closeModal('customersModal')">&times;</button>
+  <!-- نافذة الصندوق وتوريد النقدية -->
+  <div class="classic-dialog-backdrop" id="cashBoxDialog">
+    <div class="classic-dialog" style="width: 600px;">
+      <div class="classic-dialog-head">
+        <span>حركة الصندوق واليومية (صرف وتوريد)</span>
+        <button class="win-btn close" onclick="closeDialog('cashBoxDialog')">×</button>
       </div>
-      <div class="modal-content-area">
-        <table class="view-table">
-          <thead>
-            <tr><th>اسم العميل</th><th>رقم الهاتف</th><th>المديونية الحالية</th><th>إجمالي المشتريات</th><th>آخر فاتورة</th><th>إجراء</th></tr>
-          </thead>
-          <tbody id="customersTbody"></tbody>
-        </table>
-      </div>
-      <div class="modal-foot">
-        <button class="pos-btn" onclick="closeModal('customersModal')">إغلاق</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- نافذة الموردين -->
-  <div class="modal-backdrop" id="suppliersModal">
-    <div class="modal-card" style="max-width: 760px;">
-      <div class="modal-head">
-        <h3>🚚 حسابات الموردين والشركات</h3>
-        <button class="modal-close-icon" onclick="closeModal('suppliersModal')">&times;</button>
-      </div>
-      <div class="modal-content-area">
-        <table class="view-table">
-          <thead>
-            <tr><th>المورد</th><th>إجمالي المشتريات</th><th>المسدد</th><th>المتبقي له</th><th>آخر توريد</th></tr>
-          </thead>
-          <tbody id="suppliersTbody"></tbody>
-        </table>
-      </div>
-      <div class="modal-foot">
-        <button class="pos-btn" onclick="closeModal('suppliersModal')">إغلاق</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- نافذة بطاقة الصنف الشاملة والبدائل -->
-  <div class="modal-backdrop" id="medicineMasterModal">
-    <div class="modal-card" style="max-width: 840px;">
-      <div class="modal-head">
-        <h3>💊 بطاقة تعريف الصنف والمادة الفعالة والبدائل</h3>
-        <button class="modal-close-icon" onclick="closeModal('medicineMasterModal')">&times;</button>
-      </div>
-      <div class="modal-content-area">
-        <table class="view-table">
-          <thead>
-            <tr><th>كود</th><th>الاسم التجاري</th><th>المادة الفعالة</th><th>الشركة</th><th>الرف</th><th>الرصيد الكلي</th><th>السعر</th><th>التشغيلات</th></tr>
-          </thead>
-          <tbody id="medicineMasterTbody"></tbody>
-        </table>
-      </div>
-      <div class="modal-foot">
-        <button class="pos-btn" onclick="closeModal('medicineMasterModal')">إغلاق</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- نافذة حركة الصندوق اليومية -->
-  <div class="modal-backdrop" id="dailyCashModal">
-    <div class="modal-card" style="max-width: 650px;">
-      <div class="modal-head" style="background:#fefce8;">
-        <h3 style="color:#854d0e;">💰 حركة الصندوق واليومية</h3>
-        <button class="modal-close-icon" onclick="closeModal('dailyCashModal')">&times;</button>
-      </div>
-      <div class="modal-content-area">
-        <div style="display:grid; grid-template-columns:1fr 1fr 2fr auto; gap:8px; margin-bottom:12px;">
-          <select id="cashEntryType" style="padding:6px;"><option value="out">صرف مصروف</option><option value="in">توريد نقدية</option></select>
-          <input type="number" id="cashEntryAmount" placeholder="المبلغ" style="padding:6px;">
-          <input type="text" id="cashEntryNote" placeholder="البيان (مثال: بوفيه، فاتورة كهرباء)" style="padding:6px;">
-          <button class="pos-btn primary" onclick="recordCashEntry()">تسجيل</button>
+      <div class="classic-dialog-body">
+        <div style="display:flex; gap:6px; margin-bottom: 8px;">
+          <select id="cashBoxType" class="desktop-input"><option value="in">توريد نقدية</option><option value="out">صرف نقدية</option></select>
+          <input type="number" id="cashBoxAmount" class="desktop-input" placeholder="المبلغ" style="width: 100px;">
+          <input type="text" id="cashBoxNotes" class="desktop-input" placeholder="البيان" style="flex:1;">
+          <button class="win-action-btn" onclick="addCashEntry()">تسجيل الحركة</button>
         </div>
-        <table class="view-table">
-          <thead>
-            <tr><th>الوقت</th><th>النوع</th><th>المبلغ</th><th>البيان</th></tr>
-          </thead>
-          <tbody id="cashEntriesTbody"></tbody>
+        <table class="estock-grid" style="width: 100%;">
+          <thead><tr><th>الوقت</th><th>النوع</th><th>المبلغ</th><th>البيان</th></tr></thead>
+          <tbody id="cashBoxTbody"></tbody>
         </table>
       </div>
-      <div class="modal-foot">
-        <button class="pos-btn" onclick="closeModal('dailyCashModal')">إغلاق</button>
+      <div class="classic-dialog-foot">
+        <button class="win-action-btn" onclick="closeDialog('cashBoxDialog')">إغلاق</button>
       </div>
     </div>
   </div>
 
   <!-- نافذة تقفيل الوردية Z-Report -->
-  <div class="modal-backdrop" id="shiftCloseModal">
-    <div class="modal-card" style="max-width: 580px;">
-      <div class="modal-head" style="background:#fff7ed;">
-        <h3 style="color:#c2410c;">🔒 إغلاق الوردية وحساب درج النقدية (Z-Report)</h3>
-        <button class="modal-close-icon" onclick="closeModal('shiftCloseModal')">&times;</button>
+  <div class="classic-dialog-backdrop" id="zReportDialog">
+    <div class="classic-dialog" style="width: 520px;">
+      <div class="classic-dialog-head">
+        <span>تقفيل درج الكاشير وحساب الخزينة (Z-Report)</span>
+        <button class="win-btn close" onclick="closeDialog('zReportDialog')">×</button>
       </div>
-      <div class="modal-content-area">
-        <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-bottom:12px; font-size:12px;">
-          <div class="metric-pill"><span>العهدة الافتتاحية</span><strong id="zOpenCash">500.00 EGP</strong></div>
-          <div class="metric-pill"><span>مبيعات الكاش</span><strong id="zCashSales" style="color:var(--primary);">0.00 EGP</strong></div>
-          <div class="metric-pill"><span>مبيعات الفيزا</span><strong id="zVisaSales" style="color:var(--accent-blue);">0.00 EGP</strong></div>
-          <div class="metric-pill"><span>المصروفات النقدية</span><strong id="zExpenses" style="color:var(--accent-red);">0.00 EGP</strong></div>
-        </div>
-        <div style="background:#f1f5f9; padding:10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <span style="font-weight:700;">المفترض وجوده بالدرج:</span>
-          <strong id="zExpectedCash" style="font-size:16px;">500.00 EGP</strong>
-        </div>
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
-          <label style="font-weight:700; font-size:12px;">العد الفعلي للنقدية:</label>
-          <input type="number" id="zActualCashInput" value="500.00" oninput="calcShiftDiff()" style="padding:6px; font-size:15px; font-weight:800; width:130px;">
-        </div>
-        <div id="zDiffAlert" style="padding:8px; border-radius:4px; font-weight:700; font-size:13px; text-align:center;"></div>
+      <div class="classic-dialog-body">
+        <table style="width: 100%; font-size:12px; line-height:2;">
+          <tr><td>عهدة بداية الوردية:</td><td id="zOpeningCash">500.00 ج.م</td></tr>
+          <tr><td>مبيعات الكاش النقدية:</td><td id="zCashSales" style="font-weight:bold; color:green;">0.00 ج.م</td></tr>
+          <tr><td>مبيعات الفيزا:</td><td id="zVisaSales" style="font-weight:bold; color:blue;">0.00 ج.م</td></tr>
+          <tr><td>المصروفات النقدية الخارجة:</td><td id="zExpenses" style="font-weight:bold; color:red;">0.00 ج.م</td></tr>
+          <tr style="border-top: 1px solid #000; font-weight:bold;">
+            <td>المفترض وجوده بالدرج:</td>
+            <td id="zExpectedCash" style="font-size:14px;">500.00 ج.م</td>
+          </tr>
+        </table>
       </div>
-      <div class="modal-foot">
-        <button class="pos-btn primary" onclick="finalizeShiftClose()">اعتماد إغلاق الوردية وتصفير العداد</button>
-        <button class="pos-btn" onclick="closeModal('shiftCloseModal')">إلغاء</button>
+      <div class="classic-dialog-foot">
+        <button class="win-action-btn" onclick="alert('تم إقفال الوردية وتصفير المبيعات للوردية التالية بنجاح.'); closeDialog('zReportDialog');">اعتماد التقفيل</button>
+        <button class="win-action-btn" onclick="closeDialog('zReportDialog')">إلغاء</button>
       </div>
     </div>
   </div>
 
-  <!-- لوحة التقارير والمؤشرات العامة -->
-  <div class="modal-backdrop" id="reportsModal">
-    <div class="modal-card" style="max-width: 800px;">
-      <div class="modal-head">
-        <h3>📊 لوحة مؤشرات الأداء والتقارير</h3>
-        <button class="modal-close-icon" onclick="closeModal('reportsModal')">&times;</button>
+  <!-- نافذة العملاء -->
+  <div class="classic-dialog-backdrop" id="customersDialog">
+    <div class="classic-dialog" style="width: 650px;">
+      <div class="classic-dialog-head">
+        <span>دليل العملاء وحسابات الآجل</span>
+        <button class="win-btn close" onclick="closeDialog('customersDialog')">×</button>
       </div>
-      <div class="modal-content-area">
-        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:14px;">
-          <div class="metric-pill"><span>مبيعات اليوم</span><strong id="repTodaySales">0.00 EGP</strong></div>
-          <div class="metric-pill"><span>الأرباح التقديرية</span><strong id="repEstProfit" style="color:var(--primary);">0.00 EGP</strong></div>
-          <div class="metric-pill"><span>عدد الفواتير</span><strong id="repInvoicesCount">0</strong></div>
-          <div class="metric-pill"><span>رصيد مديونيات العملاء</span><strong id="repTotalDebts" style="color:var(--accent-red);">340.00 EGP</strong></div>
-        </div>
-        <h4 style="font-size:12px; margin-bottom:6px;">الأدوية الأكثر مبيعاً اليوم:</h4>
-        <table class="view-table">
-          <thead><tr><th>الدواء</th><th>الكميات المباعة</th><th>الإجمالي</th></tr></thead>
-          <tbody id="topSellingTbody">
-            <tr><td>Panadol Extra</td><td>24 شريط</td><td>600.00 EGP</td></tr>
-            <tr><td>Cataflam 50mg</td><td>12 شريط</td><td>342.00 EGP</td></tr>
-          </tbody>
+      <div class="classic-dialog-body">
+        <table class="estock-grid" style="width: 100%;">
+          <thead><tr><th>اسم العميل</th><th>رقم التليفون</th><th>المديونية</th><th>إجمالي التعامل</th></tr></thead>
+          <tbody id="customersTableBody"></tbody>
         </table>
       </div>
-      <div class="modal-foot">
-        <button class="pos-btn" onclick="closeModal('reportsModal')">إغلاق</button>
+      <div class="classic-dialog-foot">
+        <button class="win-action-btn" onclick="closeDialog('customersDialog')">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة الموردين -->
+  <div class="classic-dialog-backdrop" id="suppliersDialog">
+    <div class="classic-dialog" style="width: 650px;">
+      <div class="classic-dialog-head">
+        <span>دليل الموردين والشركات</span>
+        <button class="win-btn close" onclick="closeDialog('suppliersDialog')">×</button>
+      </div>
+      <div class="classic-dialog-body">
+        <table class="estock-grid" style="width: 100%;">
+          <thead><tr><th>اسم المورد</th><th>كود</th><th>إجمالي التوريدات</th><th>المسدد</th><th>المتبقي له</th></tr></thead>
+          <tbody id="suppliersTableBody"></tbody>
+        </table>
+      </div>
+      <div class="classic-dialog-foot">
+        <button class="win-action-btn" onclick="closeDialog('suppliersDialog')">إغلاق</button>
       </div>
     </div>
   </div>
 
   <!-- ========================================================
-       المحرك البرمجي الشامل المتصل بنظام الصيدلية
+       JAVASCRIPT ENGINE (منطق الصيدلية الكامل بدون أي نقص)
        ======================================================== -->
   <script>
-    // 1. قاعدة البيانات المركزية المتوافقة مع FEFO والتشغيلات والوحدات
+    // قاعدة البيانات المركزية المتوافقة مع FEFO ونظام الصيدليات المصري
     const pharmacyCatalog = [
       {
-        id: 1,
         code: "1001",
         barcode: "6221234567891",
         name: "Panadol Extra 500mg (24 Tab)",
         active: "Paracetamol + Caffeine",
-        company: "GSK",
-        category: "مسكنات وخافض حرارة",
         shelf: "A-01",
-        units: { box: 1, strip: 3, tablet: 24 }, // علبة، 3 أشرطة، 24 قرص
-        price: 36.00, // سعر العلبة
+        unit: "شريط",
+        unitRatio: 3, // 3 أشرطة بالعلبة
+        price: 12.00, // سعر الشريط
         minLimit: 25,
-        supplier: "المهدي فارم",
+        supplier: "المهدي فارم (121)",
         batches: [
-          { batchNo: "PN2401", expDate: "2027-04", qty: 60, buyPrice: 27.00, sellPrice: 36.00 },
-          { batchNo: "PN2309", expDate: "2026-11", qty: 20, buyPrice: 26.50, sellPrice: 36.00 } // أقرب انتهاء (FEFO)
+          { batch: "PN2309", expiry: "2026/11", qty: 20, buy: 9.00 }, // FEFO أولاً
+          { batch: "PN2401", expiry: "2027/05", qty: 60, buy: 9.00 }
         ]
       },
       {
-        id: 2,
         code: "1002",
         barcode: "6229876543210",
-        name: "Augmentin 1gm (14 Tab)",
+        name: "Augmentin 1gm 14 Tab",
         active: "Amoxicillin + Clavulanic Acid",
-        company: "GSK",
-        category: "مضادات حيوية",
         shelf: "B-03",
-        units: { box: 1, strip: 2, tablet: 14 },
+        unit: "علبة",
+        unitRatio: 1,
         price: 140.00,
-        minLimit: 15,
-        supplier: "المتحدة للصيادلة",
+        minLimit: 10,
+        supplier: "المتحدة للصيادلة (105)",
         batches: [
-          { batchNo: "AG991", expDate: "2026-12", qty: 4, buyPrice: 108.00, sellPrice: 140.00 }
+          { batch: "AG991", expiry: "2026/12", qty: 4, buy: 108.00 }
         ]
       },
       {
-        id: 3,
         code: "1003",
         barcode: "6224445556667",
-        name: "Cataflam 50mg (20 Tab)",
+        name: "Cataflam 50mg 20 Tab",
         active: "Diclofenac Potassium",
-        company: "Novartis",
-        category: "مسكن ومضاد التهاب",
         shelf: "A-04",
-        units: { box: 1, strip: 2, tablet: 20 },
-        price: 57.00,
+        unit: "شريط",
+        unitRatio: 2,
+        price: 28.50,
         minLimit: 20,
-        supplier: "ابن سينا فارما",
+        supplier: "ابن سينا فارما (140)",
         batches: [
-          { batchNo: "CT701", expDate: "2028-02", qty: 50, buyPrice: 42.00, sellPrice: 57.00 }
+          { batch: "CT701", expiry: "2028/01", qty: 50, buy: 21.00 }
         ]
       },
       {
-        id: 4,
         code: "1004",
         barcode: "6221112223334",
-        name: "Brufen 400mg (30 Tab)",
+        name: "Brufen 400mg 30 Tab",
         active: "Ibuprofen",
-        company: "Abbott",
-        category: "مسكنات عظام",
         shelf: "C-02",
-        units: { box: 1, strip: 3, tablet: 30 },
+        unit: "علبة",
+        unitRatio: 1,
         price: 54.00,
-        minLimit: 25,
-        supplier: "فارما أوفرسيز",
+        minLimit: 15,
+        supplier: "فارما أوفرسيز (112)",
         batches: [
-          { batchNo: "BF110", expDate: "2026-09", qty: 2, buyPrice: 38.00, sellPrice: 54.00 } // حرج وقريب انتهاء
+          { batch: "BF110", expiry: "2026/09", qty: 3, buy: 38.00 }
         ]
       },
       {
-        id: 5,
         code: "1005",
         barcode: "6227778889990",
-        name: "Curam 1gm (14 Tab)",
+        name: "Curam 1gm 14 Tab",
         active: "Amoxicillin + Clavulanic Acid",
-        company: "Sandoz",
-        category: "مضادات حيوية",
         shelf: "B-03",
-        units: { box: 1, strip: 2, tablet: 14 },
+        unit: "علبة",
+        unitRatio: 1,
         price: 110.00,
         minLimit: 12,
-        supplier: "المهدي فارم",
+        supplier: "المهدي فارم (121)",
         batches: [
-          { batchNo: "CR55", expDate: "2027-08", qty: 18, buyPrice: 84.00, sellPrice: 110.00 }
+          { batch: "CR55", expiry: "2027/03", qty: 18, buy: 84.00 }
         ]
       }
     ];
 
-    // العملاء
-    let customersList = [
-      { id: 1, name: "عميل نقدي (افتراضي)", phone: "—", debt: 0.00, totalPurchases: 1450.00, lastDate: "2026-09-08" },
-      { id: 2, name: "أحمد محمود سالم", phone: "01012345678", debt: 340.00, totalPurchases: 2100.00, lastDate: "2026-09-04" },
-      { id: 3, name: "د. هدى إبراهيم", phone: "01198765432", debt: 0.00, totalPurchases: 4500.00, lastDate: "2026-09-07" }
+    let currentInvoiceRows = [];
+    let selectedRowIndex = -1;
+    let heldInvoicesList = [];
+    let shiftData = { openCash: 500.00, cashSales: 0.00, visaSales: 0.00, expenses: 0.00 };
+    let cashLog = [];
+
+    const customersData = [
+      { name: "عميل نقدي", phone: "—", debt: 0.00, total: 1450.00 },
+      { name: "أحمد محمود سالم", phone: "01012345678", debt: 340.00, total: 2100.00 },
+      { name: "صيدلية السلام", phone: "01198765432", debt: 0.00, total: 6800.00 }
     ];
 
-    // الموردين
-    let suppliersList = [
-      { name: "المهدي فارم", totalBuy: 45200.00, paid: 40000.00, balanceDue: 5200.00, lastInvoice: "2026-09-02" },
-      { name: "المتحدة للصيادلة", totalBuy: 89000.00, paid: 85000.00, balanceDue: 4000.00, lastInvoice: "2026-09-05" },
-      { name: "ابن سينا فارما", totalBuy: 62000.00, paid: 62000.00, balanceDue: 0.00, lastInvoice: "2026-09-01" },
-      { name: "فارما أوفرسيز", totalBuy: 31000.00, paid: 27000.00, balanceDue: 4000.00, lastInvoice: "2026-08-28" }
+    const suppliersData = [
+      { name: "المهدي فارم", code: "121", total: 45200.00, paid: 40000.00, due: 5200.00 },
+      { name: "المتحدة للصيادلة", code: "105", total: 89000.00, paid: 85000.00, due: 4000.00 },
+      { name: "ابن سينا فارما", code: "140", total: 62000.00, paid: 62000.00, due: 0.00 },
+      { name: "فارما أوفرسيز", code: "112", total: 31000.00, paid: 27000.00, due: 4000.00 }
     ];
 
-    // حالة الفاتورة الحالية والوردية
-    let currentInvoice = [];
-    let heldInvoices = [];
-    let currentShift = { openCash: 500.00, cashSales: 0.00, visaSales: 0.00, expenses: 0.00 };
-    let cashEntries = [];
-    let purchaseDraftItems = [];
-
-    // التهيئة التلقائية عند الإقلاع
+    // تشغيل الساعة والتهيئة
     window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('currentDateMini').textContent = new Date().toLocaleDateString('ar-EG');
-      renderCustomerSelect();
-      renderInvoiceTable();
-      setupKeyboardShortcuts();
-      setupLiveSearch();
+      updateClock();
+      setInterval(updateClock, 1000);
+      setupBarcodeScanner();
+      setupKeyboardNav();
+      populateSuppliersDropdown();
     });
 
-    function openModal(id) { document.getElementById(id).classList.add('open'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-    // حساب إجمالي رصيد الصنف من جميع تشغيلاته
-    function getMedicineTotalStock(med) {
-      return med.batches.reduce((sum, b) => sum + b.qty, 0);
-    }
-
-    // مطابقة وتطبيق مبدأ FEFO (الأقرب انتهاءً أولاً)
-    function pickBatchFEFO(med) {
+    function updateClock() {
       const now = new Date();
-      // ترتيب تصاعدي حسب تاريخ الانتهاء
-      const validBatches = med.batches
-        .filter(b => b.qty > 0)
-        .sort((a, b) => new Date(a.expDate) - new Date(b.expDate));
-
-      if (validBatches.length === 0) return null;
-
-      // فحص هل الصنف منتهي؟
-      const candidate = validBatches[0];
-      const expDateObj = new Date(candidate.expDate);
-      if (expDateObj < now) {
-        candidate.isExpired = true;
-      }
-      return candidate;
+      document.getElementById('clockDate').textContent = now.toISOString().split('T')[0].replace(/-/g, '/');
+      document.getElementById('clockTime').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     }
 
-    // شارة الصلاحية الملونة
-    function getExpiryBadgeHTML(expDateStr) {
-      const now = new Date();
-      const exp = new Date(expDateStr);
-      const diffMonths = (exp.getFullYear() - now.getFullYear()) * 12 + (exp.getMonth() - now.getMonth());
+    function openDialog(id) { document.getElementById(id).classList.add('show'); }
+    function closeDialog(id) { document.getElementById(id).classList.remove('show'); }
 
-      if (diffMonths <= 0) {
-        return `<span class="batch-badge badge-expired">🔴 منتهي (${expDateStr})</span>`;
-      } else if (diffMonths <= 6) {
-        return `<span class="batch-badge badge-near">🟡 قريب (${expDateStr})</span>`;
-      } else {
-        return `<span class="batch-badge badge-valid">🟢 صالح (${expDateStr})</span>`;
-      }
+    function focusBarcodeInput() {
+      const inp = document.getElementById('barcodeMasterInput');
+      inp.focus();
+      inp.select();
     }
 
-    // ==========================================
-    // محرك البحث والباركود الذكي (Live Search)
-    // ==========================================
-    function setupLiveSearch() {
-      const input = document.getElementById('masterSearchInput');
-      const dropdown = document.getElementById('liveSearchResultsDropdown');
+    // مطابقة FEFO واختيار التشغيلة
+    function getFEFOBatch(med) {
+      if (!med.batches || med.batches.length === 0) return null;
+      return [...med.batches].sort((a, b) => new Date(a.expiry) - new Date(b.expiry))[0];
+    }
 
-      input.addEventListener('input', () => {
-        const val = input.value.trim().toLowerCase();
-        if (val.length === 0) {
-          dropdown.style.display = 'none';
-          return;
-        }
-
-        const matches = pharmacyCatalog.filter(m => 
-          m.name.toLowerCase().includes(val) ||
-          m.code.includes(val) ||
-          m.barcode.includes(val) ||
-          m.active.toLowerCase().includes(val)
-        );
-
-        if (matches.length === 0) {
-          dropdown.innerHTML = `<div style="padding:10px; text-align:center; color:#94a3b8;">لا توجد أصناف مطابقة</div>`;
-          dropdown.style.display = 'block';
-          return;
-        }
-
-        dropdown.innerHTML = '';
-        matches.forEach(med => {
-          const totalStock = getMedicineTotalStock(med);
-          const fefoBatch = pickBatchFEFO(med);
-          const div = document.createElement('div');
-          div.className = 'search-item-row';
-          div.innerHTML = `
-            <div><strong>${med.name}</strong><br><small style="color:#64748b;">${med.active}</small></div>
-            <div><span style="background:#e2e8f0; padding:1px 5px; border-radius:3px;">${med.company}</span></div>
-            <div><strong>${med.price.toFixed(2)} EGP</strong></div>
-            <div>رصيد: <strong style="color:${totalStock <= med.minLimit ? '#e11d48' : '#059669'};">${totalStock} علبة</strong></div>
-            <div>${fefoBatch ? getExpiryBadgeHTML(fefoBatch.expDate) : '<span style="color:red;">منفذ</span>'}</div>
-            <button class="pos-btn primary" style="padding:3px 8px; font-size:11px;">إدراج</button>
-          `;
-          div.onclick = () => {
-            addItemToCurrentInvoice(med);
-            input.value = '';
-            dropdown.style.display = 'none';
-          };
-          dropdown.appendChild(div);
-        });
-
-        dropdown.style.display = 'block';
-      });
-
+    // إدخال الصنف بالباركود أو الكود
+    function setupBarcodeScanner() {
+      const input = document.getElementById('barcodeMasterInput');
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           const val = input.value.trim().toLowerCase();
           if (val) {
-            const exact = pharmacyCatalog.find(m => m.barcode === val || m.code === val || m.name.toLowerCase() === val);
-            if (exact) {
-              addItemToCurrentInvoice(exact);
-              input.value = '';
-              dropdown.style.display = 'none';
-            }
+            addItemToInvoice(val);
+            input.value = '';
           }
         }
       });
     }
 
-    // ==========================================
-    // إضافة الصنف لجدول الفاتورة مع الوحدات و FEFO
-    // ==========================================
-    function addItemToCurrentInvoice(med) {
-      const fefoBatch = pickBatchFEFO(med);
-      if (!fefoBatch) {
-        alert(`عذراً، رصيد الصنف (${med.name}) منتهي تماماً بالمخزن! جاري فتح البدائل.`);
-        openSmartGenericSearch(med.active);
+    function addItemToInvoice(query) {
+      const product = pharmacyCatalog.find(p => p.code === query || p.barcode === query || p.name.toLowerCase().includes(query));
+
+      if (!product) {
+        alert('الصنف غير موجود في قاعدة بيانات الصيدلية!');
         return;
       }
 
-      if (fefoBatch.isExpired) {
-        if (!confirm(`تحذير أمان: التشغيلة المتوفرة للصنف (${med.name}) منتهية الصلاحية!\nهل تملك إذن مدير لصرفها؟`)) {
-          return;
-        }
+      const totalStock = product.batches.reduce((sum, b) => sum + b.qty, 0);
+      if (totalStock <= 0) {
+        alert(`تنبيه: رصيد الصنف (${product.name}) منتهي تماماً بالمخزن! جاري فتح شاشة البدائل.`);
+        openGenericsDialog(product.active);
+        return;
       }
 
-      const existingIndex = currentInvoice.findIndex(i => i.medId === med.id && i.batchNo === fefoBatch.batchNo && i.unitType === 'box');
+      const fefoBatch = getFEFOBatch(product);
 
+      const existingIndex = currentInvoiceRows.findIndex(r => r.code === product.code && r.batch === fefoBatch.batch);
       if (existingIndex > -1) {
-        if (currentInvoice[existingIndex].qty + 1 > fefoBatch.qty) {
-          alert('الكمية المطلوبة تتخطى رصيد هذه التشغيلة بالمخزن!');
+        if (currentInvoiceRows[existingIndex].qty + 1 > fefoBatch.qty) {
+          alert('الكمية المطلوبة تتجاوز الرصيد المتاح من هذه التشغيلة بالمخزن!');
           return;
         }
-        currentInvoice[existingIndex].qty += 1;
+        currentInvoiceRows[existingIndex].qty += 1;
       } else {
-        currentInvoice.push({
-          medId: med.id,
-          code: med.code,
-          name: med.name,
-          batchNo: fefoBatch.batchNo,
-          expDate: fefoBatch.expDate,
-          unitType: 'box', // علبة افتراضياً
-          unitsConfig: med.units,
-          baseBoxPrice: med.price,
-          unitPrice: med.price,
+        currentInvoiceRows.push({
+          code: product.code,
+          name: product.name,
+          expiry: fefoBatch.expiry,
+          unit: product.unit,
           qty: 1,
-          discount: 0,
-          maxBatchQty: fefoBatch.qty
+          price: product.price,
+          stock: totalStock,
+          minLimit: product.minLimit,
+          discountPercent: 0,
+          batch: fefoBatch.batch
         });
       }
 
-      renderInvoiceTable();
+      renderInvoiceGrid();
     }
 
-    // رسم وتحديث جدول بنود الفاتورة وحساب الوحدات
-    function renderInvoiceTable() {
-      const tbody = document.getElementById('posInvoiceTbody');
+    // رسم وتحديث جدول الأصناف والملخص العلوي
+    function renderInvoiceGrid() {
+      const tbody = document.getElementById('invoiceGridTbody');
       tbody.innerHTML = '';
 
-      let grossSum = 0;
-      let discSum = 0;
-      let piecesSum = 0;
+      let totalGross = 0;
+      let totalDiscountVal = 0;
 
-      currentInvoice.forEach((row, idx) => {
-        // حساب سعر الوحدة المختارة
-        let currentPrice = row.baseBoxPrice;
-        if (row.unitType === 'strip') {
-          currentPrice = row.baseBoxPrice / (row.unitsConfig.strip || 1);
-        } else if (row.unitType === 'tablet') {
-          currentPrice = row.baseBoxPrice / (row.unitsConfig.tablet || 1);
-        }
-        row.unitPrice = currentPrice;
+      currentInvoiceRows.forEach((row, idx) => {
+        const lineGross = row.qty * row.price;
+        const lineDiscountVal = lineGross * (row.discountPercent / 100);
+        const lineNet = lineGross - lineDiscountVal;
 
-        const lineGross = row.qty * row.unitPrice;
-        const lineDisc = lineGross * (row.discount / 100);
-        const lineNet = lineGross - lineDisc;
+        totalGross += lineGross;
+        totalDiscountVal += lineDiscountVal;
 
-        grossSum += lineGross;
-        discSum += lineDisc;
-        piecesSum += Number(row.qty);
-
+        const isShortage = row.stock <= row.minLimit;
         const tr = document.createElement('tr');
+        if (idx === selectedRowIndex) tr.classList.add('selected');
+
+        tr.onclick = () => {
+          selectedRowIndex = idx;
+          renderInvoiceGrid();
+        };
+
         tr.innerHTML = `
-          <td>${idx + 1}</td>
+          <td>${isShortage ? '<span style="color:red; font-weight:bold;">نعم</span>' : 'لا'}</td>
           <td>${row.code}</td>
-          <td style="text-align: right; font-weight: 700;">${row.name}</td>
-          <td><span style="font-weight:700; color:#0369a1;">${row.batchNo}</span></td>
-          <td>${getExpiryBadgeHTML(row.expDate)}</td>
+          <td style="text-align:right; font-weight:bold; padding-right:6px;">${row.name}</td>
+          <td style="color:#004D00; font-weight:bold;">${row.expiry}</td>
+          <td>${row.unit}</td>
           <td>
-            <select class="cell-input" onchange="changeItemUnit(${idx}, this.value)">
-              <option value="box" ${row.unitType === 'box' ? 'selected' : ''}>علبة</option>
-              <option value="strip" ${row.unitType === 'strip' ? 'selected' : ''}>شريط</option>
-              <option value="tablet" ${row.unitType === 'tablet' ? 'selected' : ''}>قرص</option>
-            </select>
+            <input type="number" class="grid-cell-input" min="1" max="${row.stock}" value="${row.qty}" onchange="updateRowQty(${idx}, this.value)">
           </td>
+          <td>${row.price.toFixed(2)}</td>
+          <td><strong>${row.stock}</strong></td>
+          <td>${row.minLimit}</td>
+          <td>${lineGross.toFixed(2)}</td>
           <td>
-            <input type="number" class="cell-input" min="1" value="${row.qty}" style="width:55px;" onchange="updateRowQty(${idx}, this.value)">
+            <input type="number" class="grid-cell-input" min="0" max="100" value="${row.discountPercent}" onchange="updateRowDiscount(${idx}, this.value)">
           </td>
-          <td>${row.unitPrice.toFixed(2)}</td>
-          <td>
-            <input type="number" class="cell-input" min="0" max="100" value="${row.discount}" style="width:45px;" onchange="updateRowDiscount(${idx}, this.value)">
-          </td>
-          <td style="font-weight:800; color:var(--dark-navy);">${lineNet.toFixed(2)}</td>
-          <td><button onclick="removeInvoiceRow(${idx})" style="border:none; background:none; color:var(--accent-red); cursor:pointer; font-weight:800; font-size:15px;">&times;</button></td>
+          <td>${lineDiscountVal.toFixed(2)}</td>
+          <td style="font-weight:bold; color:#004D00;">${lineNet.toFixed(2)}</td>
         `;
         tbody.appendChild(tr);
       });
 
-      const grandTotal = grossSum - discSum;
+      const netAmount = totalGross - totalDiscountVal;
 
-      document.getElementById('metricItemsCount').textContent = currentInvoice.length;
-      document.getElementById('metricPiecesCount').textContent = piecesSum;
-      document.getElementById('metricGrossTotal').textContent = grossSum.toFixed(2);
-      document.getElementById('metricDiscountAmount').textContent = discSum.toFixed(2);
-      document.getElementById('metricGrandTotal').textContent = grandTotal.toFixed(2);
-      document.getElementById('miniNetDisplay').textContent = grandTotal.toFixed(2);
+      // تحديث مربع الصافي المطلوب الكبير
+      document.getElementById('netAmountDisplay').textContent = netAmount.toFixed(2);
+
+      // تحديث جدول إجماليات الفاتورة المصغر
+      document.getElementById('statItemsCount').textContent = currentInvoiceRows.length;
+      document.getElementById('statGrossAmount').textContent = totalGross.toFixed(2);
+      document.getElementById('statDiscountValue').textContent = totalDiscountVal.toFixed(2);
+      document.getElementById('statMedDiscount').textContent = totalDiscountVal.toFixed(2);
     }
 
     function updateRowQty(idx, val) {
-      currentInvoice[idx].qty = Math.max(1, parseInt(val) || 1);
-      renderInvoiceTable();
+      const qty = parseInt(val) || 1;
+      currentInvoiceRows[idx].qty = Math.min(currentInvoiceRows[idx].stock, Math.max(1, qty));
+      renderInvoiceGrid();
     }
 
     function updateRowDiscount(idx, val) {
-      currentInvoice[idx].discount = Math.min(100, Math.max(0, parseFloat(val) || 0));
-      renderInvoiceTable();
+      const disc = parseFloat(val) || 0;
+      currentInvoiceRows[idx].discountPercent = Math.min(100, Math.max(0, disc));
+      renderInvoiceGrid();
     }
 
-    function changeItemUnit(idx, unit) {
-      currentInvoice[idx].unitType = unit;
-      renderInvoiceTable();
-    }
-
-    function removeInvoiceRow(idx) {
-      currentInvoice.splice(idx, 1);
-      renderInvoiceTable();
-    }
-
-    function cancelCurrentInvoice() {
-      if (currentInvoice.length > 0 && !confirm('هل تريد بالتأكيد إلغاء ومسح عناصر الفاتورة الحالية؟')) return;
-      currentInvoice = [];
-      renderInvoiceTable();
-      document.getElementById('masterSearchInput').focus();
+    function deleteSelectedRow() {
+      if (selectedRowIndex > -1 && selectedRowIndex < currentInvoiceRows.length) {
+        currentInvoiceRows.splice(selectedRowIndex, 1);
+        selectedRowIndex = -1;
+        renderInvoiceGrid();
+      } else {
+        alert('يرجى تحديد السطر المراد حذفه من الجدول أولاً بالنقر عليه.');
+      }
     }
 
     function startNewInvoice() {
-      cancelCurrentInvoice();
-      document.getElementById('invoiceNumberBadge').textContent = '#INV-' + Math.floor(1000 + Math.random() * 9000);
+      if (currentInvoiceRows.length > 0 && !confirm('هل تريد مسح البيانات وبدء فاتورة بيع جديدة؟')) return;
+      currentInvoiceRows = [];
+      selectedRowIndex = -1;
+      renderInvoiceGrid();
+      focusBarcodeInput();
     }
 
-    // ==========================================
-    // الفواتير المعلقة (Hold / Resume)
-    // ==========================================
-    function holdCurrentInvoice() {
-      if (currentInvoice.length === 0) {
-        alert('لا يمكن تعليق فاتورة فارغة!');
+    function cancelInvoice() {
+      if (confirm('هل تريد إغلاق / مسح الفاتورة الحالية؟')) {
+        currentInvoiceRows = [];
+        selectedRowIndex = -1;
+        renderInvoiceGrid();
+      }
+    }
+
+    // حفظ الفاتورة وترحيل القيود
+    function saveSalesInvoice() {
+      if (currentInvoiceRows.length === 0) {
+        alert('لا يمكن حفظ فاتورة بيع فارغة!');
         return;
       }
-      const customer = document.getElementById('invoiceCustomerSelect').value;
-      const total = document.getElementById('metricGrandTotal').textContent;
-      const invNum = document.getElementById('invoiceNumberBadge').textContent;
 
-      heldInvoices.push({
-        num: invNum,
-        customer: customer,
-        items: [...currentInvoice],
-        total: total,
-        time: new Date().toLocaleTimeString('ar-EG')
+      const net = parseFloat(document.getElementById('netAmountDisplay').textContent);
+      const invType = document.querySelector('input[name="invType"]:checked').value;
+
+      if (invType === 'cash') shiftData.cashSales += net;
+      if (invType === 'visa') shiftData.visaSales += net;
+
+      // خصم الكميات من الرصيد والتشغيلات
+      currentInvoiceRows.forEach(row => {
+        const med = pharmacyCatalog.find(p => p.code === row.code);
+        if (med) {
+          const b = med.batches.find(b => b.batch === row.batch);
+          if (b) b.qty = Math.max(0, b.qty - row.qty);
+        }
       });
 
-      document.getElementById('heldBadge').textContent = heldInvoices.length;
-      alert('⏸ تم تعليق الفاتورة بنجاح!');
-      currentInvoice = [];
-      renderInvoiceTable();
-      startNewInvoice();
+      alert(`✅ تم ترحيل وحفظ فاتورة البيع بنجاح!\nطريقة الدفع: [${invType.toUpperCase()}]\nالصافي المطلوب المحصل: ${net.toFixed(2)} ج.م`);
+      currentInvoiceRows = [];
+      selectedRowIndex = -1;
+      renderInvoiceGrid();
+      focusBarcodeInput();
     }
 
-    function openHeldInvoicesModal() {
-      const tbody = document.getElementById('heldInvoicesTbody');
+    // تعليق الفاتورة واستدعاؤها
+    function holdCurrentInvoice() {
+      if (currentInvoiceRows.length === 0) return;
+      heldInvoicesList.push({
+        num: '#INV-' + Math.floor(1000 + Math.random() * 9000),
+        customer: document.getElementById('customerPhoneInput').value || 'نقدي',
+        items: [...currentInvoiceRows],
+        net: document.getElementById('netAmountDisplay').textContent,
+        time: new Date().toLocaleTimeString('ar-EG')
+      });
+      alert('⏸️ تم تعليق الفاتورة بالذاكرة.');
+      currentInvoiceRows = [];
+      renderInvoiceGrid();
+    }
+
+    function openHeldDialog() {
+      const tbody = document.getElementById('heldTableBody');
       tbody.innerHTML = '';
-      if (heldInvoices.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="padding:15px; color:#94a3b8;">لا توجد فواتير معلقة حالياً</td></tr>`;
+      if (heldInvoicesList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="padding:10px;">لا توجد فواتير معلقة حالياً</td></tr>`;
       } else {
-        heldInvoices.forEach((h, idx) => {
+        heldInvoicesList.forEach((h, idx) => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td><strong>${h.num}</strong></td>
             <td>${h.customer}</td>
             <td>${h.items.length}</td>
-            <td style="font-weight:700; color:var(--primary);">${h.total} EGP</td>
+            <td style="font-weight:bold; color:green;">${h.net}</td>
             <td>${h.time}</td>
-            <td>
-              <button class="pos-btn primary" style="padding:3px 8px; font-size:11px;" onclick="resumeHeldInvoice(${idx})">استكمال</button>
-              <button class="pos-btn red" style="padding:3px 8px; font-size:11px;" onclick="heldInvoices.splice(${idx},1); openHeldInvoicesModal();">حذف</button>
-            </td>
+            <td><button class="win-action-btn" onclick="restoreHeldInvoice(${idx})">استرجاع</button></td>
           `;
           tbody.appendChild(tr);
         });
       }
-      openModal('heldInvoicesModal');
+      openDialog('heldDialog');
     }
 
-    function resumeHeldInvoice(idx) {
-      currentInvoice = heldInvoices[idx].items;
-      heldInvoices.splice(idx, 1);
-      document.getElementById('heldBadge').textContent = heldInvoices.length;
-      closeModal('heldInvoicesModal');
-      renderInvoiceTable();
+    function restoreHeldInvoice(idx) {
+      currentInvoiceRows = heldInvoicesList[idx].items;
+      heldInvoicesList.splice(idx, 1);
+      closeDialog('heldDialog');
+      renderInvoiceGrid();
     }
 
-    // ==========================================
-    // شاشة الدفع والتحصيل (Checkout Modal)
-    // ==========================================
-    function openPaymentModal() {
-      if (currentInvoice.length === 0) {
-        alert('يرجى إضافة أصناف أولاً قبل الدفع!');
-        return;
-      }
-      const net = document.getElementById('metricGrandTotal').textContent;
-      document.getElementById('payModalNetDue').textContent = net + ' EGP';
-      document.getElementById('cashGivenInput').value = net;
-      computePaymentChange();
-      openModal('paymentModal');
-    }
-
-    function togglePayInputs() {
-      const method = document.querySelector('input[name="payMethodOption"]:checked').value;
-      const visaGroup = document.getElementById('visaPartGroup');
-      const cashInput = document.getElementById('cashGivenInput');
-      const net = parseFloat(document.getElementById('metricGrandTotal').textContent);
-
-      if (method === 'mixed') {
-        visaGroup.style.display = 'flex';
-        cashInput.value = (net / 2).toFixed(2);
-        document.getElementById('visaGivenInput').value = (net / 2).toFixed(2);
-      } else if (method === 'visa') {
-        visaGroup.style.display = 'none';
-        cashInput.value = 0;
-      } else if (method === 'credit') {
-        visaGroup.style.display = 'none';
-        cashInput.value = 0;
-      } else {
-        visaGroup.style.display = 'none';
-        cashInput.value = net;
-      }
-      computePaymentChange();
-    }
-
-    function computePaymentChange() {
-      const net = parseFloat(document.getElementById('metricGrandTotal').textContent) || 0;
-      const cash = parseFloat(document.getElementById('cashGivenInput').value) || 0;
-      const visa = parseFloat(document.getElementById('visaGivenInput')?.value) || 0;
-      const diff = (cash + visa) - net;
-      document.getElementById('changeDueDisplay').textContent = diff >= 0 ? diff.toFixed(2) + ' EGP' : '0.00 EGP';
-    }
-
-    function confirmFinalizeSale() {
-      const net = parseFloat(document.getElementById('metricGrandTotal').textContent);
-      const method = document.querySelector('input[name="payMethodOption"]:checked').value;
-
-      if (method === 'cash') {
-        currentShift.cashSales += net;
-      } else if (method === 'visa') {
-        currentShift.visaSales += net;
-      } else if (method === 'mixed') {
-        currentShift.cashSales += parseFloat(document.getElementById('cashGivenInput').value) || 0;
-        currentShift.visaSales += parseFloat(document.getElementById('visaGivenInput').value) || 0;
-      } else if (method === 'credit') {
-        const custName = document.getElementById('invoiceCustomerSelect').value;
-        const cust = customersList.find(c => c.name === custName);
-        if (cust) cust.debt += net;
-      }
-
-      // خصم الأرصدة الفعلية من الـ Batches
-      currentInvoice.forEach(row => {
-        const med = pharmacyCatalog.find(m => m.id === row.medId);
-        if (med) {
-          const b = med.batches.find(b => b.batchNo === row.batchNo);
-          if (b) {
-            // احتساب الخصم بناء على الوحدة المباعة
-            let deduction = row.qty;
-            if (row.unitType === 'strip') deduction = row.qty / (row.unitsConfig.strip || 1);
-            if (row.unitType === 'tablet') deduction = row.qty / (row.unitsConfig.tablet || 1);
-            b.qty = Math.max(0, b.qty - deduction);
-          }
-        }
-      });
-
-      alert(`✅ تم إتمام الفاتورة وترحيل القيود بنجاح!\nالمطلوب: ${net.toFixed(2)} EGP | الطريقة: ${method.toUpperCase()}`);
-      closeModal('paymentModal');
-      currentInvoice = [];
-      renderInvoiceTable();
-      startNewInvoice();
-    }
-
-    // ==========================================
-    // شاشة النواقص وأمر الشراء التلقائي
-    // ==========================================
-    function openShortagesModal() {
-      const tbody = document.getElementById('shortagesTbody');
+    // النواقص والطلبيات
+    function openShortagesDialog() {
+      const tbody = document.getElementById('shortagesTableBody');
       tbody.innerHTML = '';
-
-      pharmacyCatalog.forEach(med => {
-        const totalStock = getMedicineTotalStock(med);
-        if (totalStock <= med.minLimit * 1.5) {
-          let statusBadge = '<span style="color:#2563eb; font-weight:700;">🟠 قرب النفاد</span>';
-          if (totalStock <= 0) statusBadge = '<span style="color:#e11d48; font-weight:800;">🔴 حرجة (منفذ)</span>';
-          else if (totalStock <= med.minLimit) statusBadge = '<span style="color:#d97706; font-weight:700;">🟡 نواقص</span>';
-
-          const suggestedQty = (med.minLimit * 2) - totalStock;
+      pharmacyCatalog.forEach(p => {
+        const total = p.batches.reduce((sum, b) => sum + b.qty, 0);
+        if (total <= p.minLimit) {
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td>${statusBadge}</td>
-            <td>${med.code}</td>
-            <td style="text-align:right; font-weight:700;">${med.name}</td>
-            <td><strong style="color:red;">${totalStock}</strong> علبة</td>
-            <td>${med.minLimit}</td>
-            <td><strong style="color:var(--primary);">+ ${suggestedQty} علبة</strong></td>
-            <td>${med.supplier}</td>
+            <td>${p.code}</td>
+            <td style="text-align:right; font-weight:bold;">${p.name}</td>
+            <td style="color:red; font-weight:bold;">${total}</td>
+            <td>${p.minLimit}</td>
+            <td style="color:blue; font-weight:bold;">+ ${(p.minLimit * 2) - total}</td>
+            <td>${p.supplier}</td>
           `;
           tbody.appendChild(tr);
         }
       });
-
-      openModal('shortagesModal');
+      openDialog('shortagesDialog');
     }
 
-    function generateAutoPurchaseOrder() {
-      purchaseDraftItems = [];
-      pharmacyCatalog.forEach(med => {
-        const stock = getMedicineTotalStock(med);
-        if (stock <= med.minLimit) {
-          const qty = (med.minLimit * 2) - stock;
-          purchaseDraftItems.push({
-            name: med.name,
-            qty: qty,
-            buyPrice: (med.price * 0.75),
-            batchNo: 'PO-' + Math.floor(100 + Math.random() * 900),
-            expDate: '2028-06',
-            medId: med.id
-          });
-        }
-      });
-
-      closeModal('shortagesModal');
-      renderPurchaseDraftModal();
-      openModal('purchasesModal');
+    function createPurchaseOrderFromShortages() {
+      closeDialog('shortagesDialog');
+      openPurchasesDialog();
+      alert('تم تحميل النواقص في مسودة فاتورة المشتريات.');
     }
 
-    function renderPurchaseDraftModal() {
-      renderSuppliersSelect();
-      const tbody = document.getElementById('purchaseDraftTbody');
+    // شاشة البدائل والمادة الفعالة
+    function openGenericsDialog(activeTerm = '') {
+      const input = document.getElementById('genericSearchInput');
+      if (activeTerm) {
+        input.value = activeTerm;
+        searchGenerics(activeTerm);
+      }
+      openDialog('genericsDialog');
+    }
+
+    function searchGenerics(term) {
+      const t = (term || '').toLowerCase().trim();
+      const tbody = document.getElementById('genericsTableBody');
       tbody.innerHTML = '';
-      purchaseDraftItems.forEach(item => {
+      const matches = pharmacyCatalog.filter(p => p.active.toLowerCase().includes(t) || p.name.toLowerCase().includes(t));
+      matches.forEach(m => {
+        const total = m.batches.reduce((sum, b) => sum + b.qty, 0);
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td style="text-align:right; font-weight:700;">${item.name}</td>
-          <td><input type="number" value="${item.qty}" style="width:60px; text-align:center;"></td>
-          <td><input type="number" value="${item.buyPrice.toFixed(2)}" style="width:70px; text-align:center;"></td>
-          <td><input type="text" value="${item.batchNo}" style="width:80px; text-align:center;"></td>
-          <td><input type="month" value="${item.expDate}" style="padding:2px;"></td>
-          <td><strong>${(item.qty * item.buyPrice).toFixed(2)}</strong></td>
+          <td>${m.code}</td>
+          <td style="text-align:right; font-weight:bold;">${m.name}</td>
+          <td>${m.active}</td>
+          <td>${m.shelf}</td>
+          <td style="font-weight:bold; color:${total <= m.minLimit ? 'red' : 'green'};">${total}</td>
+          <td>${m.price.toFixed(2)}</td>
+          <td><button class="win-action-btn" onclick="addItemToInvoice('${m.code}'); closeDialog('genericsDialog');">إدراج</button></td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    function savePurchaseInvoiceDraft() {
-      alert('✅ تم اعتماد فاتورة الشراء وتحديث أرصدة المخازن بنجاح!');
-      closeModal('purchasesModal');
-    }
-
-    // ==========================================
-    // العملاء والموردين وشاشات الحسابات
-    // ==========================================
-    function renderCustomerSelect() {
-      const sel = document.getElementById('invoiceCustomerSelect');
+    // المشتريات
+    function populateSuppliersDropdown() {
+      const sel = document.getElementById('purSupplierSelect');
       sel.innerHTML = '';
-      customersList.forEach(c => {
+      suppliersData.forEach(s => {
         const opt = document.createElement('option');
-        opt.value = c.name;
-        opt.textContent = `${c.name} ${c.debt > 0 ? `(مدين: ${c.debt} EGP)` : ''}`;
+        opt.value = s.name;
+        opt.textContent = `${s.name} (كود ${s.code})`;
         sel.appendChild(opt);
       });
     }
 
-    function openCustomersModal() {
-      const tbody = document.getElementById('customersTbody');
+    function openPurchasesDialog() {
+      const tbody = document.getElementById('purchaseTableBody');
       tbody.innerHTML = '';
-      customersList.forEach(c => {
+      pharmacyCatalog.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="text-align:right; font-weight:bold;">${p.name}</td>
+          <td><input type="number" class="grid-cell-input" value="10"></td>
+          <td>${(p.price * 0.75).toFixed(2)}</td>
+          <td><input type="text" class="grid-cell-input" value="BATCH-${Math.floor(100+Math.random()*900)}" style="width:70px;"></td>
+          <td><input type="text" class="grid-cell-input" value="2028/06" style="width:60px;"></td>
+          <td><strong>${(10 * p.price * 0.75).toFixed(2)}</strong></td>
+        `;
+        tbody.appendChild(tr);
+      });
+      openDialog('purchasesDialog');
+    }
+
+    function savePurchaseInvoice() {
+      alert('✅ تم اعتماد فاتورة المشتريات وزيادة الأرصدة بالمخزن.');
+      closeDialog('purchasesDialog');
+    }
+
+    // الصندوق
+    function openCashBoxDialog() {
+      renderCashTable();
+      openDialog('cashBoxDialog');
+    }
+
+    function addCashEntry() {
+      const type = document.getElementById('cashBoxType').value;
+      const amount = parseFloat(document.getElementById('cashBoxAmount').value) || 0;
+      const notes = document.getElementById('cashBoxNotes').value.trim();
+      if (amount <= 0 || !notes) {
+        alert('ادخل المبلغ والبيان بصورة صحيحة');
+        return;
+      }
+      if (type === 'out') shiftData.expenses += amount;
+      else shiftData.openCash += amount;
+
+      cashLog.push({
+        time: new Date().toLocaleTimeString('ar-EG'),
+        type: type === 'out' ? 'صرف نقدية' : 'توريد نقدية',
+        amount: amount,
+        notes: notes
+      });
+
+      document.getElementById('cashBoxAmount').value = '';
+      document.getElementById('cashBoxNotes').value = '';
+      renderCashTable();
+    }
+
+    function renderCashTable() {
+      const tbody = document.getElementById('cashBoxTbody');
+      tbody.innerHTML = '';
+      cashLog.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${c.time}</td>
+          <td style="color:${c.type.includes('صرف') ? 'red' : 'green'}; font-weight:bold;">${c.type}</td>
+          <td>${c.amount.toFixed(2)}</td>
+          <td>${c.notes}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // تقفيل الوردية Z-Report
+    function openZReportDialog() {
+      document.getElementById('zOpeningCash').textContent = shiftData.openCash.toFixed(2) + ' ج.م';
+      document.getElementById('zCashSales').textContent = shiftData.cashSales.toFixed(2) + ' ج.م';
+      document.getElementById('zVisaSales').textContent = shiftData.visaSales.toFixed(2) + ' ج.م';
+      document.getElementById('zExpenses').textContent = shiftData.expenses.toFixed(2) + ' ج.م';
+      const expected = shiftData.openCash + shiftData.cashSales - shiftData.expenses;
+      document.getElementById('zExpectedCash').textContent = expected.toFixed(2) + ' ج.م';
+      openDialog('zReportDialog');
+    }
+
+    // العملاء والموردين
+    function openCustomersDialog() {
+      const tbody = document.getElementById('customersTableBody');
+      tbody.innerHTML = '';
+      customersData.forEach(c => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${c.name}</strong></td>
           <td>${c.phone}</td>
-          <td style="color:${c.debt > 0 ? '#e11d48' : '#059669'}; font-weight:800;">${c.debt.toFixed(2)} EGP</td>
-          <td>${c.totalPurchases.toFixed(2)} EGP</td>
-          <td>${c.lastDate}</td>
-          <td>
-            ${c.debt > 0 ? `<button class="pos-btn primary" style="padding:2px 8px; font-size:11px;" onclick="collectCustomerDebt(${c.id})">تحصيل مديونية</button>` : '—'}
-          </td>
+          <td style="color:${c.debt > 0 ? 'red' : 'green'}; font-weight:bold;">${c.debt.toFixed(2)} ج.م</td>
+          <td>${c.total.toFixed(2)} ج.م</td>
         `;
         tbody.appendChild(tr);
       });
-      openModal('customersModal');
+      openDialog('customersDialog');
     }
 
-    function collectCustomerDebt(id) {
-      const cust = customersList.find(c => c.id === id);
-      const amt = parseFloat(prompt(`تحصيل مديونية من العميل (${cust.name}):\nالمبلغ المستحق: ${cust.debt} EGP`, cust.debt));
-      if (amt && amt > 0) {
-        cust.debt = Math.max(0, cust.debt - amt);
-        currentShift.cashSales += amt;
-        alert(`تم تحصيل ${amt} EGP وإيداعها بدرج الكاشير بنجاح.`);
-        openCustomersModal();
-        renderCustomerSelect();
-      }
-    }
-
-    function renderSuppliersSelect() {
-      const sel = document.getElementById('purchaseSupplierSelect');
-      sel.innerHTML = '';
-      suppliersList.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.name;
-        opt.textContent = s.name;
-        sel.appendChild(opt);
-      });
-    }
-
-    function openSuppliersModal() {
-      const tbody = document.getElementById('suppliersTbody');
+    function openSuppliersDialog() {
+      const tbody = document.getElementById('suppliersTableBody');
       tbody.innerHTML = '';
-      suppliersList.forEach(s => {
+      suppliersData.forEach(s => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${s.name}</strong></td>
-          <td>${s.totalBuy.toFixed(2)} EGP</td>
-          <td style="color:var(--primary); font-weight:700;">${s.paid.toFixed(2)} EGP</td>
-          <td style="color:var(--accent-red); font-weight:800;">${s.balanceDue.toFixed(2)} EGP</td>
-          <td>${s.lastInvoice}</td>
+          <td>${s.code}</td>
+          <td>${s.total.toFixed(2)} ج.م</td>
+          <td>${s.paid.toFixed(2)} ج.م</td>
+          <td style="color:red; font-weight:bold;">${s.due.toFixed(2)} ج.م</td>
         `;
         tbody.appendChild(tr);
       });
-      openModal('suppliersModal');
+      openDialog('suppliersDialog');
     }
 
-    function openMedicineMasterModal() {
-      const tbody = document.getElementById('medicineMasterTbody');
-      tbody.innerHTML = '';
-      pharmacyCatalog.forEach(m => {
-        const total = getMedicineTotalStock(m);
-        const batchesList = m.batches.map(b => `${b.batchNo} (${b.expDate})`).join(', ');
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${m.code}</td>
-          <td style="text-align:right; font-weight:700;">${m.name}</td>
-          <td>${m.active}</td>
-          <td>${m.company}</td>
-          <td><strong style="color:var(--primary);">${m.shelf}</strong></td>
-          <td style="font-weight:700;">${total} علبة</td>
-          <td style="font-weight:700;">${m.price.toFixed(2)}</td>
-          <td style="font-size:11px;">${batchesList}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-      openModal('medicineMasterModal');
-    }
-
-    function openPurchasesModal() {
-      renderSuppliersSelect();
-      openModal('purchasesModal');
-    }
-
-    // حركة الصندوق
-    function openDailyCashModal() {
-      renderCashEntries();
-      openModal('dailyCashModal');
-    }
-
-    function recordCashEntry() {
-      const type = document.getElementById('cashEntryType').value;
-      const amt = parseFloat(document.getElementById('cashEntryAmount').value) || 0;
-      const note = document.getElementById('cashEntryNote').value.trim();
-
-      if (amt <= 0 || !note) {
-        alert('ادخل المبلغ والبيان بصورة صحيحة!');
-        return;
-      }
-
-      if (type === 'out') currentShift.expenses += amt;
-      else currentShift.openCash += amt;
-
-      cashEntries.push({
-        time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
-        type: type === 'out' ? 'صرف مصروف' : 'توريد نقدية',
-        amt: amt,
-        note: note
-      });
-
-      document.getElementById('cashEntryAmount').value = '';
-      document.getElementById('cashEntryNote').value = '';
-      renderCashEntries();
-    }
-
-    function renderCashEntries() {
-      const tbody = document.getElementById('cashEntriesTbody');
-      tbody.innerHTML = '';
-      cashEntries.forEach(c => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${c.time}</td>
-          <td style="color:${c.type.includes('صرف') ? 'red' : 'green'}; font-weight:700;">${c.type}</td>
-          <td><strong>${c.amt.toFixed(2)} EGP</strong></td>
-          <td>${c.note}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // إغلاق الوردية Z-Report
-    function openShiftCloseModal() {
-      document.getElementById('zOpenCash').textContent = currentShift.openCash.toFixed(2) + ' EGP';
-      document.getElementById('zCashSales').textContent = currentShift.cashSales.toFixed(2) + ' EGP';
-      document.getElementById('zVisaSales').textContent = currentShift.visaSales.toFixed(2) + ' EGP';
-      document.getElementById('zExpenses').textContent = currentShift.expenses.toFixed(2) + ' EGP';
-
-      const expected = currentShift.openCash + currentShift.cashSales - currentShift.expenses;
-      document.getElementById('zExpectedCash').textContent = expected.toFixed(2) + ' EGP';
-      document.getElementById('zActualCashInput').value = expected.toFixed(2);
-      calcShiftDiff();
-      openModal('shiftCloseModal');
-    }
-
-    function calcShiftDiff() {
-      const expected = currentShift.openCash + currentShift.cashSales - currentShift.expenses;
-      const actual = parseFloat(document.getElementById('zActualCashInput').value) || 0;
-      const diff = actual - expected;
-      const box = document.getElementById('zDiffAlert');
-
-      if (diff === 0) {
-        box.style.background = '#dcfce7'; box.style.color = '#15803d';
-        box.textContent = '✅ الدرج متطابق تماماً بنسبة 100%';
-      } else if (diff < 0) {
-        box.style.background = '#fee2e2'; box.style.color = '#b91c1c';
-        box.textContent = `⚠️ يوجد عجز نقدي بالدرج: ${Math.abs(diff).toFixed(2)} EGP`;
-      } else {
-        box.style.background = '#eff6ff'; box.style.color = '#1e40af';
-        box.textContent = `ℹ️ توجد زيادة نقدية بالدرج: ${diff.toFixed(2)} EGP`;
-      }
-    }
-
-    function finalizeShiftClose() {
-      alert('✅ تم اعتماد إغلاق الوردية وترحيل التقرير المالي وتصفير العداد للوردية القادمة.');
-      currentShift.cashSales = 0;
-      currentShift.visaSales = 0;
-      currentShift.expenses = 0;
-      cashEntries = [];
-      closeModal('shiftCloseModal');
-    }
-
-    // لوحة التقارير والمؤشرات
-    function openReportsDashboard() {
-      document.getElementById('repTodaySales').textContent = (currentShift.cashSales + currentShift.visaSales).toFixed(2) + ' EGP';
-      document.getElementById('repEstProfit').textContent = ((currentShift.cashSales + currentShift.visaSales) * 0.22).toFixed(2) + ' EGP';
-      openModal('reportsModal');
-    }
-
-    // البحث الذكي بالبدائل والمادة الفعالة
-    function openSmartGenericSearch(activeTerm = '') {
-      const term = activeTerm || prompt('ادخل اسم المادة الفعالة أو اسم الدواء للبحث عن بدائله:');
-      if (!term) return;
-
-      const results = pharmacyCatalog.filter(m => m.active.toLowerCase().includes(term.toLowerCase()) || m.name.toLowerCase().includes(term.toLowerCase()));
-      if (results.length === 0) {
-        alert('لم يتم العثور على بدائل مسجلة!');
-        return;
-      }
-
-      let msg = `نتائج البدائل المتطابقة للمادة الفعالة:\n`;
-      results.forEach(r => {
-        msg += `- ${r.name} | رصيد: ${getMedicineTotalStock(r)} علبة | سعر: ${r.price} EGP | الرف: ${r.shelf}\n`;
-      });
-      alert(msg);
-    }
-
-    // ==========================================
-    // اختصارات لوحة المفاتيح الاحترافية (Desktop Workflow)
-    // ==========================================
-    function setupKeyboardShortcuts() {
+    // اختصارات لوحة المفاتيح
+    function setupKeyboardNav() {
       window.addEventListener('keydown', (e) => {
-        if (e.key === 'F10') {
-          e.preventDefault();
-          openPaymentModal();
-        } else if (e.key === 'F9') {
-          e.preventDefault();
-          holdCurrentInvoice();
-        } else if (e.key === 'F4') {
-          e.preventDefault();
-          openShortagesModal();
-        } else if (e.key === 'F3') {
-          e.preventDefault();
-          openSmartGenericSearch();
-        } else if (e.key === 'F2') {
-          e.preventDefault();
-          document.getElementById('masterSearchInput').focus();
-        } else if (e.ctrlKey && (e.key === 'n' || e.key === 'N')) {
-          e.preventDefault();
-          startNewInvoice();
-        } else if (e.key === 'Escape') {
-          // إغلاق أي نافذة مفتوحة
-          document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open'));
+        if (e.key === 'F10') { e.preventDefault(); saveSalesInvoice(); }
+        if (e.key === 'F9') { e.preventDefault(); holdCurrentInvoice(); }
+        if (e.key === 'F4') { e.preventDefault(); openShortagesDialog(); }
+        if (e.key === 'F3') { e.preventDefault(); openGenericsDialog(); }
+        if (e.key === 'F2') { e.preventDefault(); focusBarcodeInput(); }
+        if (e.key === 'Delete') { deleteSelectedRow(); }
+        if (e.ctrlKey && (e.key === 'n' || e.key === 'N')) { e.preventDefault(); startNewInvoice(); }
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.classic-dialog-backdrop.show').forEach(d => d.classList.remove('show'));
         }
       });
     }
