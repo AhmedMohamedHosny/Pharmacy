@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام إدارة الصيدلية - e-Stock Web</title>
+  <style>
+    :root {
+      --primary-header: #d97706;
+      --primary-dark: #b45309;
+      --table-header: #047857;
+      --bg-main: #f3f4f6;
+      --panel-bg: #ffffff;
+      --border-color: #cbd5e1;
+      --text-main: #1f2937;
+      --accent-red: #dc2626;
+      --accent-blue: #2563eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* الشريط العلوي للقوائم */
+    .top-menu-bar {
+      background: linear-gradient(to bottom, #f59e0b, #d97706);
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      height: 38px;
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .menu-item {
+      position: relative;
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    .menu-item:hover {
+      background-color: var(--primary-dark);
+      border-radius: 4px;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: white;
+      color: #333;
+      min-width: 220px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      border: 1px solid var(--border-color);
+      z-index: 1000;
+      border-radius: 0 0 6px 6px;
+    }
+
+    .menu-item:hover .dropdown {
+      display: block;
+    }
+
+    .dropdown-item {
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      border-bottom: 1px solid #f1f5f9;
+      transition: background 0.15s;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f8fafc;
+      color: var(--accent-blue);
+    }
+
+    /* شريط العنوان والبيانات العامة */
+    .sub-header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 16px;
+      display: grid;
+      grid-template-columns: 2fr 3fr 1.5fr 1.5fr;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .header-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .header-field input, .header-field select {
+      padding: 5px 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+    }
+
+    .pay-type-group {
+      display: flex;
+      gap: 12px;
+      background: #f8fafc;
+      padding: 6px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .pay-type-group label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .net-box {
+      background-color: #fef3c7;
+      border: 2px solid #f59e0b;
+      border-radius: 6px;
+      padding: 4px 10px;
+      text-align: center;
+    }
+
+    .net-box span {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .net-box .value {
+      font-size: 24px;
+      font-weight: 800;
+      color: #9a3412;
+    }
+
+    /* المساحة الرئيسية للشاشة */
+    .main-workspace {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      padding: 10px;
+      gap: 10px;
+    }
+
+    /* الشريط الجانبي للأزرار السريعة */
+    .side-actions {
+      width: 130px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 6px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: white;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      background-color: #f1f5f9;
+      transform: translateY(-1px);
+    }
+
+    .action-btn.save { background: #dcfce7; border-color: #86efac; color: #15803d; }
+    .action-btn.hold { background: #ffedd5; border-color: #fdba74; color: #c2410c; }
+    .action-btn.cancel { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
+
+    /* منطقة الجدول والمدخلات */
+    .grid-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    /* إدخال الباركود السريع */
+    .fast-entry-bar {
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .fast-entry-bar input {
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .fast-entry-bar input:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+    }
+
+    /* جدول بنود الفاتورة */
+    .table-wrapper {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    thead th {
+      background-color: var(--table-header);
+      color: white;
+      padding: 8px 6px;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+    }
+
+    tbody td {
+      padding: 6px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    tbody tr:hover {
+      background-color: #f1f5f9;
+    }
+
+    tbody input {
+      width: 70px;
+      padding: 4px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      border-radius: 3px;
+    }
+
+    .delete-row-btn {
+      color: var(--accent-red);
+      cursor: pointer;
+      font-weight: bold;
+      border: none;
+      background: none;
+      font-size: 16px;
+    }
+
+    /* لوحة الحسابات والإجماليات بالأسفل */
+    .totals-footer {
+      background: #fdfdfd;
+      border-top: 1px solid var(--border-color);
+      padding: 10px 16px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr) 2fr;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .stat-card {
+      background: #f8fafc;
+      padding: 6px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .stat-card span {
+      display: block;
+      color: #64748b;
+      margin-bottom: 2px;
+    }
+
+    .stat-card strong {
+      font-size: 15px;
+      color: #0f172a;
+    }
+
+    /* شريط الحالة السفلي */
+    .status-bar {
+      background: #e2e8f0;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-color);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- شريط القوائم العلوي -->
+  <nav class="top-menu-bar">
+    <div class="menu-item">البيانات العامة</div>
+    <div class="menu-item">الأصناف
+      <div class="dropdown">
+        <div class="dropdown-item">إضافة صنف جديد</div>
+        <div class="dropdown-item">قائمة نواقص الأدوية</div>
+        <div class="dropdown-item">طباعة باركود</div>
+        <div class="dropdown-item">تعديل أسعار جماعي</div>
+      </div>
+    </div>
+    <div class="menu-item">المخازن</div>
+    <div class="menu-item">الموردين</div>
+    <div class="menu-item">المشتريات
+      <div class="dropdown">
+        <div class="dropdown-item">فاتورة مشتريات</div>
+        <div class="dropdown-item">مرتجع مشتريات</div>
+        <div class="dropdown-item">كشف حساب مورد</div>
+      </div>
+    </div>
+    <div class="menu-item">العملاء
+      <div class="dropdown">
+        <div class="dropdown-item">قائمة العملاء</div>
+        <div class="dropdown-item">التعاقدات والتأمينات</div>
+        <div class="dropdown-item">مناطق العملاء والتوصيل</div>
+        <div class="dropdown-item">كشف حساب عميل</div>
+      </div>
+    </div>
+    <div class="menu-item">المبيعات
+      <div class="dropdown">
+        <div class="dropdown-item">فاتورة المبيعات (F1)</div>
+        <div class="dropdown-item">مرتجع مبيعات</div>
+        <div class="dropdown-item">إقفال الفواتير المعلقة</div>
+        <div class="dropdown-item">تقفيل درج الكاشير</div>
+        <div class="dropdown-item">تقرير مبيعات الموظفين يومي</div>
+        <div class="dropdown-item">تقرير تكلفة المبيعات والأرباح</div>
+      </div>
+    </div>
+    <div class="menu-item">الحسابات اليومية
+      <div class="dropdown">
+        <div class="dropdown-item">صرف نقدية</div>
+        <div class="dropdown-item">توريد نقدية</div>
+        <div class="dropdown-item">تقرير المصروفات النقدية</div>
+      </div>
+    </div>
+    <div class="menu-item">الحسابات العامة
+      <div class="dropdown">
+        <div class="dropdown-item">شجرة الحسابات</div>
+        <div class="dropdown-item">حسابات الخزائن والأدراج</div>
+        <div class="dropdown-item">قائمة الدخل والأرباح</div>
+      </div>
+    </div>
+    <div class="menu-item">الطلبيات</div>
+    <div class="menu-item">شؤون العاملين</div>
+  </nav>
+
+  <!-- ترويسة بيانات الفاتورة المباشرة -->
+  <header class="sub-header">
+    <div class="header-field">
+      <label>المخزن:</label>
+      <select id="warehouseSelect">
+        <option>المخزن الرئيسي 1</option>
+        <option>مخزن الأدوية والمستلزمات 2</option>
+      </select>
+    </div>
+
+    <div class="header-field">
+      <label>العميل:</label>
+      <input type="text" id="customerInput" placeholder="كود العميل أو رقم التليفون (افتراضي: نقدي)">
+    </div>
+
+    <div class="pay-type-group">
+      <label><input type="radio" name="payType" value="cash" checked> كاش</label>
+      <label><input type="radio" name="payType" value="visa"> فيزا</label>
+      <label><input type="radio" name="payType" value="credit"> آجل</label>
+      <label><input type="radio" name="payType" value="hold"> معلقة</label>
+    </div>
+
+    <div class="net-box">
+      <span>الصافي المطلوب (EGP)</span>
+      <div class="value" id="netAmountDisplay">0.00</div>
+    </div>
+  </header>
+
+  <!-- مساحة العمل التفاعلية -->
+  <main class="main-workspace">
+    
+    <!-- الأزرار التشغيلية -->
+    <aside class="side-actions">
+      <button class="action-btn" onclick="resetInvoice()">🆕 فاتورة جديدة</button>
+      <button class="action-btn save" onclick="saveInvoice()">💾 حفظ (F10)</button>
+      <button class="action-btn hold" onclick="holdInvoice()">⏸️ تعليق الفاتورة</button>
+      <button class="action-btn" onclick="openHeldList()">📂 فواتير معلقة</button>
+      <button class="action-btn" onclick="openShortages()">⚠️ نواقص الأصناف</button>
+      <button class="action-btn" onclick="printReceipt()">🖨️ طباعة إيصال</button>
+      <button class="action-btn cancel" onclick="resetInvoice()">❌ إغلاق / مسح</button>
+    </aside>
+
+    <!-- منطقة الجدول والباركود -->
+    <section class="grid-container">
+      
+      <div class="fast-entry-bar">
+        <input type="text" id="barcodeScannerInput" placeholder="امسح الباركود أو اكتب اسم الدواء واضغط Enter..." style="width: 350px;" autofocus>
+        <button class="action-btn" onclick="searchItemManually()" style="padding: 6px 14px;">بحث بالأصناف</button>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="invoiceItemsTable">
+          <thead>
+            <tr>
+              <th style="width: 40px;">#</th>
+              <th>كود الصنف</th>
+              <th>اسم الصنف الدوائي</th>
+              <th>الصلاحية</th>
+              <th>الوحدة</th>
+              <th>الرصيد</th>
+              <th>الكمية</th>
+              <th>سعر البيع</th>
+              <th>خصم %</th>
+              <th>الإجمالي</th>
+              <th style="width: 40px;">حذف</th>
+            </tr>
+          </thead>
+          <tbody id="invoiceTableBody">
+            <!-- تُضاف البنود برمجياً هنا -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ملخص الحسابات الإجمالي -->
+      <footer class="totals-footer">
+        <div class="stat-card">
+          <span>عدد الأصناف</span>
+          <strong id="itemsCount">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>إجمالي القطع</span>
+          <strong id="unitsCount">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>الإجمالي ق الخصم</span>
+          <strong id="subTotal">0.00</strong>
+        </div>
+        <div class="stat-card">
+          <span>قيمة الخصم</span>
+          <strong id="discountTotal">0.00</strong>
+        </div>
+        <div class="stat-card">
+          <span>الضريبة (VAT)</span>
+          <strong id="taxTotal">0.00</strong>
+        </div>
+        <div class="stat-card">
+          <span>المدفوع</span>
+          <input type="number" id="paidAmount" value="0.00" style="width: 100%; text-align: center;" oninput="calculateBalance()">
+        </div>
+        <div class="stat-card" style="background: #ecfdf5; border-color: #a7f3d0;">
+          <span style="color: #047857;">الباقي للعميل</span>
+          <strong id="changeAmount" style="color: #065f46;">0.00</strong>
+        </div>
+      </footer>
+
+    </section>
+
+  </main>
+
+  <!-- شريط الحالة بالأسفل -->
+  <div class="status-bar">
+    <div>الكاشير الحالي: <strong>صيدلي / أحمد</strong> | الوردية: <strong>صباحية (درج 1)</strong></div>
+    <div>حالة قاعدة البيانات: <strong>متصل محلياً (IndexedDB Ready)</strong></div>
+    <div>التاريخ: <span id="currentDateString"></span></div>
+  </div>
+
+  <script>
+    // قاعدة بيانات تجريبية لمحاكاة الأدوية
+    const mockPharmacyCatalog = [
+      { code: "1001", name: "Panadol Extra 500mg (24 Tab)", expiry: "2027/05", unit: "شريط", stock: 140, price: 25.00 },
+      { code: "1002", name: "Augmentin 1gm 14 Tab", expiry: "2026/11", unit: "علبة", stock: 35, price: 135.00 },
+      { code: "1003", name: "Cataflam 50mg 20 Tab", expiry: "2028/01", unit: "شريط", stock: 65, price: 28.50 },
+      { code: "1004", name: "Brufen 400mg 30 Tab", expiry: "2027/09", unit: "علبة", stock: 12, price: 54.00 },
+      { code: "1005", name: "Concor 5mg 30 Tab", expiry: "2027/04", unit: "علبة", stock: 80, price: 60.00 }
+    ];
+
+    let invoiceItems = [];
+
+    // تحديث التاريخ
+    document.getElementById('currentDateString').textContent = new Date().toLocaleDateString('ar-EG', {
+      weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'
+    });
+
+    // الاستماع لمدخلات الباركود
+    const barcodeInput = document.getElementById('barcodeScannerInput');
+    barcodeInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const query = this.value.trim();
+        if (query) {
+          addItemToInvoice(query);
+          this.value = '';
+        }
+      }
+    });
+
+    // اختصارات لوحة المفاتيح
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'F10') {
+        e.preventDefault();
+        saveInvoice();
+      }
+      if (e.key === 'F2') {
+        e.preventDefault();
+        barcodeInput.focus();
+      }
+    });
+
+    function addItemToInvoice(query) {
+      const product = mockPharmacyCatalog.find(p => p.code === query || p.name.toLowerCase().includes(query.toLowerCase()));
+      
+      if (!product) {
+        alert('الصنف غير موجود بقاعدة بيانات الصيدلية!');
+        return;
+      }
+
+      const existingIndex = invoiceItems.findIndex(i => i.code === product.code);
+      if (existingIndex > -1) {
+        invoiceItems[existingIndex].qty += 1;
+      } else {
+        invoiceItems.push({
+          ...product,
+          qty: 1,
+          discount: 0
+        });
+      }
+
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('invoiceTableBody');
+      tbody.innerHTML = '';
+
+      let subTotal = 0;
+      let totalDiscount = 0;
+      let units = 0;
+
+      invoiceItems.forEach((item, index) => {
+        const itemSubtotal = item.qty * item.price;
+        const discountVal = (itemSubtotal * item.discount) / 100;
+        const itemNet = itemSubtotal - discountVal;
+
+        subTotal += itemSubtotal;
+        totalDiscount += discountVal;
+        units += Number(item.qty);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${item.code}</td>
+          <td style="text-align: right; font-weight: 600;">${item.name}</td>
+          <td><span style="color:#047857; font-weight:600;">${item.expiry}</span></td>
+          <td>${item.unit}</td>
+          <td>${item.stock}</td>
+          <td>
+            <input type="number" min="1" max="${item.stock}" value="${item.qty}" onchange="updateQty(${index}, this.value)">
+          </td>
+          <td>${item.price.toFixed(2)}</td>
+          <td>
+            <input type="number" min="0" max="100" value="${item.discount}" onchange="updateDiscount(${index}, this.value)">%
+          </td>
+          <td style="font-weight:700; color:#1e293b;">${itemNet.toFixed(2)}</td>
+          <td><button class="delete-row-btn" onclick="removeItem(${index})">&times;</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const netAmount = subTotal - totalDiscount;
+
+      document.getElementById('itemsCount').textContent = invoiceItems.length;
+      document.getElementById('unitsCount').textContent = units;
+      document.getElementById('subTotal').textContent = subTotal.toFixed(2);
+      document.getElementById('discountTotal').textContent = totalDiscount.toFixed(2);
+      document.getElementById('netAmountDisplay').textContent = netAmount.toFixed(2);
+
+      calculateBalance();
+    }
+
+    function updateQty(index, val) {
+      const qty = parseInt(val) || 1;
+      invoiceItems[index].qty = Math.max(1, qty);
+      renderTable();
+    }
+
+    function updateDiscount(index, val) {
+      const disc = parseFloat(val) || 0;
+      invoiceItems[index].discount = Math.min(100, Math.max(0, disc));
+      renderTable();
+    }
+
+    function removeItem(index) {
+      invoiceItems.splice(index, 1);
+      renderTable();
+    }
+
+    function calculateBalance() {
+      const net = parseFloat(document.getElementById('netAmountDisplay').textContent) || 0;
+      const paid = parseFloat(document.getElementById('paidAmount').value) || 0;
+      const diff = paid - net;
+      const changeElem = document.getElementById('changeAmount');
+      changeElem.textContent = diff >= 0 ? diff.toFixed(2) : "0.00";
+    }
+
+    function resetInvoice() {
+      if (invoiceItems.length > 0 && !confirm('هل تريد بالتأكيد فتح فاتورة جديدة ومسح البيانات الحالية؟')) {
+        return;
+      }
+      invoiceItems = [];
+      document.getElementById('paidAmount').value = "0.00";
+      renderTable();
+      barcodeInput.focus();
+    }
+
+    function saveInvoice() {
+      if (invoiceItems.length === 0) {
+        alert('لا يمكن حفظ فاتورة فارغة!');
+        return;
+      }
+      const net = document.getElementById('netAmountDisplay').textContent;
+      alert(`تم ترحيل الفاتورة وحفظها بنجاح!\nالإجمالي الصافي: ${net} ج.م`);
+      resetInvoice();
+    }
+
+    function holdInvoice() {
+      if (invoiceItems.length === 0) return;
+      localStorage.setItem('held_invoice', JSON.stringify(invoiceItems));
+      alert('تم تعليق الفاتورة بنجاح في الذاكرة.');
+      invoiceItems = [];
+      renderTable();
+    }
+
+    function openHeldList() {
+      const held = localStorage.getItem('held_invoice');
+      if (!held) {
+        alert('لا توجد فواتير معلقة حالياً.');
+        return;
+      }
+      invoiceItems = JSON.parse(held);
+      localStorage.removeItem('held_invoice');
+      renderTable();
+    }
+
+    function searchItemManually() {
+      const q = prompt('ادخل اسم الدواء للبحث:');
+      if (q) addItemToInvoice(q);
+    }
+
+    function openShortages() {
+      alert('شاشة النواقص: الأصناف التالية قاربت على النفاد:\n- Brufen 400mg (المتبقي: 12 علبة)');
+    }
+
+    function printReceipt() {
+      window.print();
+    }
+  </script>
+</body>
+</html>
